@@ -1,0 +1,1 @@
+create database psi default character set utf8
