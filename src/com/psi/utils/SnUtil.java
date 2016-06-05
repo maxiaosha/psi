@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
- * »õÎï±àºÅÉú³ÉÊµÌåÀà
- * @author ³ÂÅà±ó
+ * ç¼–å·ç”Ÿæˆç±»
+ * @author é™ˆåŸ¹æ–Œ
  *
  */
 
@@ -17,10 +17,10 @@ public class SnUtil {
 		s+=str;
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < 6; i++) {
-            int a = Math.abs((new Random()).nextInt(57));// ²úÉú0~57µÄËæ»úÊı
-            if (a <= 9) {// ½«0~9×ªÎªcharµÄ0~9
+            int a = Math.abs((new Random()).nextInt(57));// äº§ç”Ÿ0~57çš„éšæœºæ•°
+            if (a <= 9) {// å°†0~9è½¬ä¸ºcharçš„0~9
                 sb.append((char) (a + 48));
-            } else if (a < 33) {// ½«10~33×ªÎªcharµÄA~Z
+            } else if (a < 33) {// å°†10~33è½¬ä¸ºcharçš„A~Z
                 if((a + 55) == 79 || (a + 55) == 73){
                     sb.append((char) (a + 63));
                 }else{
