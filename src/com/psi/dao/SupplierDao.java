@@ -1,0 +1,14 @@
+package com.psi.dao;
+
+import com.psi.entity.Supplier;
+
+/**
+ * π©”¶…ÃDao≤„
+ * @author ≥¬≈‡±Û
+ *
+ */
+
+public interface SupplierDao extends BaseDao<Supplier>{
+	
+
+}
