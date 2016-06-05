@@ -1,0 +1,12 @@
+package com.psi.service;
+
+import com.psi.entity.Goods;
+
+/**
+ * …Ã∆∑ Service≤„
+ * @author ‘¯”Óøµ
+ *
+ */
+public interface GoodsService extends BaseService<Goods> {
+
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.MenuDao">
+	<resultMap type="Menu" id="MenuResult">
+		<result property="id" column="ID" />
+		<result property="level" column="LEVEL" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="name" column="NAME" />
+		<result property="url" column="URL" />
+		<result property="orderFlag" column="ORDER_FLAG" />
+		<result property="icon" column="ICON" />
+		<result property="authorization" column="AUTHORIZATION" />
+		
+		<result property="parentName" column="PARENT_NAME" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, LEVEL, PARENT_ID, NAME, URL,ORDER_FLAG,ICON,AUTHORIZATION
+	</sql>
+	
+	<select id="getById" resultMap="MenuResult">
+		select <include refid="Base_Column_List" /> from menu where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into menu(<include refid="Base_Column_List" />)
+		 values(#{id}, #{level}, #{parentId}, #{name}, #{url},#{orderFlag},#{icon},#{authorization})
+	</insert>
+	
+	<delete id="delete">
+		delete from menu where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="Menu">
+		update menu
+		<set>
+			<if test="level != null and level !=''">
+				LEVEL = #{level},
+			</if>
+			<if test="parentId != null">
+				PARENT_ID = #{parentId},
+			</if>
+			<if test="name != null and name !=''">
+				NAME = #{name},
+			</if>
+			<if test="url != null and url !=''">
+				URL = #{url},
+			</if>
+			<if test="orderFlag != null and orderFlag !=''">
+				ORDER_FLAG = #{orderFlag},
+			</if>
+			<if test="icon != null">
+				ICON = #{icon},
+			</if>
+			<if test="authorization != null">
+				AUTHORIZATION = #{authorization},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="MenuResult">
+		select <include refid="Base_Column_List" />,(select NAME from menu p where p.ID = m.PARENT_ID) PARENT_NAME
+		from menu m
+		order by LEVEL,ORDER_FLAG
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from menu
+	</select>
+		
+	<select id="selectMenuByParentId" resultMap="MenuResult">
+		select <include refid="Base_Column_List" />
+		from menu m
+		where PARENT_ID = #{parentId}
+		order by ORDER_FLAG
+	</select>
+</mapper> 

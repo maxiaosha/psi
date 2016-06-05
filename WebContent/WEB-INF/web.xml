@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>psi</display-name>
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>classpath:config/log4j.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>log4jRefreshInterval</param-name>
+    <param-value>60000</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:config/applicationContext.xml</param-value>
+  </context-param>
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <async-supported>true</async-supported>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>startupServlet</servlet-name>
+    <servlet-class>com.psi.servlet.StartupServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>springMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:config/spring-mvc.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springMVC</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Kaptcha</servlet-name>
+    <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+    <init-param>
+      <param-name>kaptcha.border</param-name>
+      <param-value>yes</param-value>
+    </init-param>
+    <init-param>
+      <description>Thickness of the border around kaptcha. Legal values are > 0. </description>
+      <param-name>kaptcha.border.thickness</param-name>
+      <param-value>1</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.border.color</param-name>
+      <param-value>105,179,90</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.font.color</param-name>
+      <param-value>red</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.image.width</param-name>
+      <param-value>120</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.image.height</param-name>
+      <param-value>45</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.font.size</param-name>
+      <param-value>40</param-value>
+    </init-param>
+    <init-param>
+      <description>The text producer. </description>
+      <param-name>kaptcha.textproducer.impl</param-name>
+      <param-value>com.google.code.kaptcha.text.impl.DefaultTextCreator</param-value>
+    </init-param>
+    <init-param>
+      <description>The characters that will create the kaptcha. </description>
+      <param-name>kaptcha.textproducer.char.string</param-name>
+      <param-value>0123456789</param-value>
+    </init-param>
+    <init-param>
+      <description>The image producer. </description>
+      <param-name>kaptcha.producer.impl</param-name>
+      <param-value>com.google.code.kaptcha.impl.DefaultKaptcha </param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.char.length</param-name>
+      <param-value>4</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.font.names</param-name>
+      <param-value>Arial, Courier</param-value>
+    </init-param>
+    <init-param>
+      <description>The noise producer. </description>
+      <param-name>kaptcha.noise.impl</param-name>
+      <param-value>com.google.code.kaptcha.impl.DefaultNoise </param-value>
+    </init-param>
+    <init-param>
+      <description>The noise color. Legal values are r,g,b. </description>
+      <param-name>kaptcha.noise.color</param-name>
+      <param-value>blue</param-value>
+    </init-param>
+    <init-param>
+      <description>The obscurificator implementation. </description>
+      <param-name>kaptcha.obscurificator.impl</param-name>
+      <param-value>com.google.code.kaptcha.impl.WaterRipple</param-value>
+    </init-param>
+    <init-param>
+      <description>The background implementation. </description>
+      <param-name>kaptcha.background.impl</param-name>
+      <param-value>com.google.code.kaptcha.impl.DefaultBackground</param-value>
+    </init-param>
+    <init-param>
+      <description>Ending background color. Legal values are r,g,b. </description>
+      <param-name>kaptcha.background.clear.to</param-name>
+      <param-value>white</param-value>
+    </init-param>
+    <init-param>
+      <description>The word renderer implementation. </description>
+      <param-name>kaptcha.word.impl</param-name>
+      <param-value>com.google.code.kaptcha.text.impl.DefaultWordRenderer</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.session.key</param-name>
+      <param-value>KAPTCHA_SESSION_KEY</param-value>
+    </init-param>
+    <init-param>
+      <description>The date the kaptcha is generated is put into the HttpSession. This is the key value for that item in the session. </description>
+      <param-name>kaptcha.session.date</param-name>
+      <param-value>KAPTCHA_SESSION_DATE</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Kaptcha</servlet-name>
+    <url-pattern>/Kaptcha.jpg</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/404</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/500</location>
+  </error-page>
+</web-app>
