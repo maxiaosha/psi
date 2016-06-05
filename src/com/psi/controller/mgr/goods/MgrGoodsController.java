@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.entity.Goods;
+import com.psi.entity.Supplier;
 import com.psi.service.GoodsService;
+import com.psi.service.SupplierService;
 import com.psi.utils.AjaxUtil;
 import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
+import com.psi.utils.SnUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,6 +35,8 @@ import net.sf.json.JSONObject;
 public class MgrGoodsController {
 	@Autowired
 	private GoodsService goodsService;
+	@Autowired
+	private SupplierService supplierService;
 	
 	/**
 	 * 商品管理页面
@@ -40,32 +45,42 @@ public class MgrGoodsController {
 	 */
 	@RequestMapping("/manageGoods")
 	public ModelAndView manageGoods() throws Exception {
+		List<Supplier> supplierList = supplierService.queryList(null);
 		List<Goods> goodsList = goodsService.queryList(null);
-
+		
 		ModelAndView mav = new ModelAndView("main");
 		mav.addObject("title", "商品信息管理");
 		mav.addObject("mainPage", "/WEB-INF/mgr/goods/manageGoods.jsp");
+		mav.addObject("supplierList", supplierList);
 		mav.addObject("goodsList", goodsList);
 		
 		return mav;
 	}
 	
+
 	/**
 	 * 分页查找商品记录
-	 * @param offsets
 	 * @param limit
-	 * @param page
-	 * @param name
+	 * @param offset
+	 * @param searchGoodsSn
+	 * @param searchGoodsName
+	 * @param searchGoodsTypeId
+	 * @param searchSupplierId
+	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/list",  method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-	public String list(String limit, String offset, String name, HttpServletRequest request) throws Exception {
+	public String list(String limit, String offset, String searchGoodsSn,
+			String searchGoodsName, String searchGoodsTypeId, String searchSupplierId, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", PageUtil.toStart(offset));
 		map.put("size", PageUtil.toSize(limit));
-		map.put("name", name);
+		map.put("sn", searchGoodsSn);
+		map.put("name", searchGoodsName);
+		map.put("goodsTypeId", searchGoodsTypeId);
+		map.put("supplierId", searchSupplierId);
 		List<Goods> goodsList = goodsService.queryList(map);
 		Long total = goodsService.getTotal(map);
 		
@@ -93,6 +108,7 @@ public class MgrGoodsController {
     public String add(Goods goods) throws Exception {
 			try {
 				goods.setId(SerialNumberUtil.getSerialNumber());
+				goods.setSn(SnUtil.createSn("GD"));
 				if (goodsService.insert(goods) > 0) {
 					return AjaxUtil.getStringMessage(1, "添加商品记录成功！", null);
 				} else {

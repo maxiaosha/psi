@@ -18,7 +18,7 @@ public class Goods implements Serializable {
 	private String sn;						// 商品编号
 	private String name;					// 商品名
 	private String goodsTypeId;				// 商品类别	
-	private String supplierId;				// 供应商ID
+	private Supplier supplier;				// 供应商ID
 	private Double salePrice;				// 售价
 	private Double purchasePrice;			// 进价
 	private String productionDate;			// 生产日期
@@ -51,11 +51,12 @@ public class Goods implements Serializable {
 	public void setGoodsTypeId(String goodsTypeId) {
 		this.goodsTypeId = goodsTypeId;
 	}
-	public String getSupplierId() {
-		return supplierId;
+	
+	public Supplier getSupplier() {
+		return supplier;
 	}
-	public void setSupplierId(String supplierId) {
-		this.supplierId = supplierId;
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 	public Double getSalePrice() {
 		return salePrice;

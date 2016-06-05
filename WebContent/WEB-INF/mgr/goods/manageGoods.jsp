@@ -16,10 +16,18 @@
                             
                             <div id="searchGoods" style="margin-top:15px;">
                             <form class="form-horizontal" id="searchGoodsForm">
-                            <div class="row">          	
+                            <div class="row">
                             	<div class="col-sm-3">
                             	<div class="form-group">
-    								<label for="name" class="col-sm-4 control-label" style="text-align:left;">商品名</label>
+    								<label for="searchGoodsSn" class="col-sm-4 control-label" style="text-align:left;">商品编号</label>
+    								<div class="col-sm-8">
+    									<input type="text" class="form-control" id="searchGoodsSn" name="searchGoodsSn" placeholder="商品编号">
+    								</div>    				
+  								</div>
+  								</div>          	
+                            	<div class="col-sm-3">
+                            	<div class="form-group">
+    								<label for="searchGoodsName" class="col-sm-4 control-label" style="text-align:left;">商品名</label>
     								<div class="col-sm-8">
     									<input type="text" class="form-control" id="searchGoodsName" name="searchGoodsName" placeholder="商品名">
     								</div>    				
@@ -27,9 +35,22 @@
   								</div>
   								<div class="col-sm-3">
   								<div class="form-group">
-    								<label for="name" class="col-sm-4 control-label" style="text-align:left;">商品类别</label>
+    								<label for="searchGoodsTypeId" class="col-sm-4 control-label" style="text-align:left;">商品类别</label>
     								<div class="col-sm-8">
       									<input type="text" class="form-control" id="searchGoodsTypeId" name="searchGoodsTypeId" placeholder="商品类别">
+    								</div>
+  								</div>
+  								</div>
+  								<div class="col-sm-3">
+  								<div class="form-group">
+    								<label for="searchSupplierId" class="col-sm-4 control-label" style="text-align:left;">供应商</label>
+    								<div class="col-sm-8">
+      									<select class="form-control" id="searchSupplierId" name="searchSupplierId">
+											<option value="">请选择</option>
+										<c:forEach var="supplier" items="${requestScope.supplierList }">
+											<option value="${supplier.id }">${supplier.name }</option>
+										</c:forEach>
+										</select>
     								</div>
   								</div>
   								</div>
@@ -102,7 +123,12 @@
   				<div class="form-group">
     			<label for="supplierId" class="col-sm-3 control-label">供应商</label>
     			<div class="col-sm-6">
-      				<input type="text" class="form-control" id="supplierId" name="supplierId" placeholder="供应商">
+    				<select class="form-control" id="supplierId" name="supplier.id">
+						<option value="">请选择</option>
+							<c:forEach var="supplier" items="${requestScope.supplierList }">
+						<option value="${supplier.id }">${supplier.name }</option>
+							</c:forEach>
+					</select>  
     			</div>
     			<div class="need col-sm-1">
 					*
@@ -245,7 +271,7 @@ $(document).ready(function() {
  	                  },
  	                  {
  	                      title: '供应商',
- 	                      field: 'supplierId',
+ 	                      field: 'supplier.name',
  	                      width: '10%',
  	                      align: 'center',
  	                      valign: 'middle'
@@ -365,7 +391,10 @@ function queryParams(params) {  //配置参数
     var return_params = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
       limit: params.limit,   //页面大小
       offset: params.offset,  //bootstrap分页偏移量
-      name:$("#searchGoodsName").val()	//查询传商品名到服务器
+      searchGoodsSn:$("#searchGoodsSn").val(),
+      searchGoodsName:$("#searchGoodsName").val(),	//查询传商品名到服务器
+      searchGoodsTypeId:$("#searchGoodsTypeId").val(),
+      searchSupplierId:$("#searchSupplierId").val(),
     };
     return return_params;
 }
@@ -404,7 +433,7 @@ function validate() {
 function resetValue() {
 	$("#name").val("");
 	$("#goodsTypeId").val("");
-	$("#supplierId").val("");
+	$("#supplierId").prop('selectedIndex', 0);
 	$("#purchasePrice").val("");
 	$("#salePrice").val("");
 	$("#productionDate").val("");
@@ -441,7 +470,11 @@ function _editGoodsDialog() {
     $("#myModalLabel").html("修改商品信息");
     $("#name").val(rows[0].name);
 	$("#goodsTypeId").val(rows[0].goodsTypeId);
-	$("#supplierId").val(rows[0].supplierId);
+	$("#supplierId option").map(function () {
+		if ($(this).val() == rows[0].supplier.id) {
+			$(this).attr({"selected" : "selected"});
+		}
+	})
 	$("#purchasePrice").val(rows[0].purchasePrice);
 	$("#salePrice").val(rows[0].salePrice);
 	$("#productionDate").val(rows[0].productionDate);
@@ -450,11 +483,7 @@ function _editGoodsDialog() {
 	$("#numberUnit").val(rows[0].numberUnit);
 	$("#remark").val(rows[0].remark);
 	
-	/* $("#authorization option").map(function () {
-		if ($(this).val() == rows[0].authorization) {
-			$(this).attr({"selected" : "selected"});
-		}
-	}) */
+	/*  */
 	
 	$("#id").val(rows[0].id);
 	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/goods/modify"});
@@ -511,7 +540,11 @@ function viewGoodsDialog(id) {
 	$("#submit").hide();
     $("#name").val(row.name);
 	$("#goodsTypeId").val(row.goodsTypeId);
-	$("#supplierId").val(row.supplierId);
+	$("#supplierId option").map(function () {
+		if ($(this).val() == row.supplier.id) {
+			$(this).attr({"selected" : "selected"});
+		}
+	})
 	$("#purchasePrice").val(row.purchasePrice);
 	$("#salePrice").val(row.salePrice);
 	$("#productionDate").val(row.productionDate);
@@ -527,7 +560,11 @@ function editGoodsDialog(id) {
     $("#myModalLabel").html("修改商品信息");
     $("#name").val(row.name);
 	$("#goodsTypeId").val(row.goodsTypeId);
-	$("#supplierId").val(row.supplierId);
+	$("#supplierId option").map(function () {
+		if ($(this).val() == row.supplier.id) {
+			$(this).attr({"selected" : "selected"});
+		}
+	})
 	$("#purchasePrice").val(row.purchasePrice);
 	$("#salePrice").val(row.salePrice);
 	$("#productionDate").val(row.productionDate);
