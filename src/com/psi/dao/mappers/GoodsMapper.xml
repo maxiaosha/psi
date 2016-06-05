@@ -9,7 +9,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="sn" column="SN" />
 		<result property="name" column="NAME" />
 		<result property="goodsTypeId" column="GOODS_TYPE_ID" />
-		<result property="supplierId" column="SUPPLIER_ID" />
 		<result property="salePrice" column="SALE_PRICE" />
 		<result property="purchasePrice" column="PURCHASE_PRICE" />
 		<result property="productionDate" column="PRODUCTION_DATE" />		
@@ -18,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="numberUnit" column="NUMBER_UNIT" />		
 		<result property="remark" column="REMARK" />
 		<result property="stock" column="STOCK" />
+		<association property="supplier" column="SUPPLIER_ID" select="com.psi.dao.SupplierDao.getById"></association>
 	</resultMap>
 	
 	<sql id="Base_Column_List" >
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<insert id="insert">
 		insert into goods(<include refid="Base_Column_List" />)
-		 values(#{id}, #{sn}, #{name}, #{goodsTypeId}, #{supplierId},
+		 values(#{id}, #{sn}, #{name}, #{goodsTypeId}, #{supplier.id},
 		 #{salePrice}, #{purchasePrice}, #{productionDate}, #{shelfLife}, 
 		 #{spec}, #{numberUnit}, #{remark}, #{stock})
 	</insert>
@@ -46,8 +46,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="goodsTypeId != null and goodsTypeId !=''">
 				GOODS_TYPE_ID = #{goodsTypeId},
 			</if>
-			<if test="supplierId != null and supplierId != ''">
-				SUPPLIER_ID = #{supplierId},
+			<if test="supplier.id != null and supplier.id != ''">
+				SUPPLIER_ID = #{supplier.id},
 			</if>
 			<if test="salePrice != null">
 				SALE_PRICE = #{salePrice},
@@ -81,8 +81,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select <include refid="Base_Column_List" />
 		from goods 
 		<where>
+			<if test="sn != null and sn != ''">
+				and sn like CONCAT('%',#{sn},'%') 
+			</if>
 			<if test="name != null and name != ''">
-					and NAME like CONCAT('%',#{name},'%') 
+				and NAME like CONCAT('%',#{name},'%') 
+			</if>
+			<if test="supplierId != null and supplierId !=''">
+				and SUPPLIER_ID = #{supplierId}
+			</if>
+			<if test="goodsTypeId != null and goodsTypeId !=''">
+				and GOODS_TYPE_ID = #{goodsTypeId}
 			</if>
 		</where>
 		<if test="start != null and size != null">
