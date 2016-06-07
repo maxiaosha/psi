@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
- * »õÎï±àºÅÉú³ÉÊµÌåÀà
- * @author ³ÂÅà±ó
+ * ç¼–å·ç”Ÿæˆç±»
+ * @author é™ˆåŸ¹æ–Œ
  *
  */
 
@@ -15,20 +15,14 @@ public class SnUtil {
 		java.util.Date date=new java.util.Date();
 		String str=sdf.format(date);
 		s+=str;
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 6; i++) {
-            int a = Math.abs((new Random()).nextInt(57));// ²úÉú0~57µÄËæ»úÊı
-            if (a <= 9) {// ½«0~9×ªÎªcharµÄ0~9
-                sb.append((char) (a + 48));
-            } else if (a < 33) {// ½«10~33×ªÎªcharµÄA~Z
-                if((a + 55) == 79 || (a + 55) == 73){
-                    sb.append((char) (a + 63));
-                }else{
-                    sb.append((char) (a + 55));
-                }
-            }
+       StringBuffer buffer = new StringBuffer("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");   
+        StringBuffer sb = new StringBuffer();   
+        Random random = new Random();   
+        int range = buffer.length();   
+        for (int i = 0; i < 6; i ++) {   
+            sb.append(buffer.charAt(random.nextInt(range)));   
         }
-		s+=sb;
+        s+=sb;
 		return s;
 	}
 
