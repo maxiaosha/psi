@@ -63,6 +63,12 @@
                      <input type="text" class="form-control" id="phone" name="phone" placeholder="电话">          
                 </div>
             </div>
+            <div class="form-group">
+            	<label for="address" class="col-sm-3 control-label">地址</label>
+                <div class="col-sm-6">
+                     <input type="text" class="form-control" id="address" name="address" placeholder="地址">          
+                </div>
+            </div>
             <input type="hidden" id="id" name="id" />
                               
         </form>
@@ -116,12 +122,16 @@ $(document).ready(function() {
  	    pageSize: pageSize,
  	    pageNumber: page,
  	    sidePagination: "server", //服务端处理分页
- 	          columns: [
- 	                    {
-   	                      	align: 'center',
-   	                      	valign: 'middle',
- 	                    	checkbox: 'true'
- 	                    }, 
+         	columns: [
+                    	{
+                    		title: '<input type="checkbox" id="allCheckbox" />',
+	                      	align: 'center',
+	                        width: '3%',
+	                      	valign: 'middle',
+	                     	formatter:function(value,row,index){
+	                    		 return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
+	                    	}
+                      },
  	                  {
  			      		  title: '供应商名',
  	                      field: 'name',
@@ -148,6 +158,13 @@ $(document).ready(function() {
  	                      valign: 'middle'
  	                  },
  	                  {
+ 	                	  title: '地址',
+ 	                	  field: 'address',
+ 	                	  align: 'center',
+ 	                	  valign:'middle'
+ 	                	  
+ 	                  },
+ 	                  {
  	                	  title: '操作',
  	                	  field: '',
  	                	  align: 'center',
@@ -161,8 +178,22 @@ $(document).ready(function() {
  	              ],
  	             onPageChange:function(number, size) {
  	            	window.history.pushState(null, null, "manageSupplier?page=" + number + "&pageSize=" + size); 	
- 	             }
- 	                   
+ 	             },
+		onLoadSuccess:function() {
+     		$('#allCheckbox').iCheck({
+	         checkboxClass: 'icheckbox_minimal-blue',
+	 		});
+     		$('.selCheckbox').iCheck({
+   	         checkboxClass: 'icheckbox_minimal-blue',
+   	 		});
+     		
+     		
+			$("#allCheckbox").on('ifChecked', function(event){  
+				$(".selCheckbox").iCheck('check');
+			}).on('ifUnchecked', function(event){
+				$(".selCheckbox").iCheck('uncheck');
+			});
+      }             
  	   });
 	
 
@@ -205,52 +236,57 @@ $(document).ready(function() {
 })
 
 function validate() {
-	 if ($.trim($("#name").val()) == "") {
-		    $("#message").html("请输入供应商名称");  // 赋值
-		    $("#name").focus();           // 输入框获得焦点
-		    return false;
-		    }
-		    if ($.trim($("#linkman").val()) == "") {
-		    $("#message").html("请输入联系人");
-		    $("#linkman").focus();
-		    return false;
-		  }
-		     if ($.trim($("#mail").val()) == "") {
-		    $("#message").html("请输入供应商邮箱");  // 赋值
-		    $("#mail").focus();           // 输入框获得焦点
-		    return false;
-		    }
-
-			//验证邮箱地址
+	if ($.trim($("#name").val()) == "") {
+		$("#message").html("请输入供应商名称");  // 赋值
+		$("#name").focus();           // 输入框获得焦点
+		return false;
+		}
+	if ($.trim($("#linkman").val()) == "") {
+		$("#message").html("请输入联系人");
+		$("#linkman").focus();
+		return false;
+		}
+	if ($.trim($("#mail").val()) == "") {
+		$("#message").html("请输入供应商邮箱");  // 赋值
+		$("#mail").focus();           // 输入框获得焦点
+		return false;
+		}
+	
+	//验证邮箱地址
 		   
-		    if($("#mail").val()==""){ 
-		    $("#message").html("邮箱地址不能为空");
-		    $("#mail").focus(); 
-		    return false; 
-		   } 
-		    if(!$("#mail").val().match( /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){ 
-		    $("#message").html("邮箱地址格式不正确！请重新输入！"); 
-		    $("#mail").focus(); 
-		    return false; 
-		   } 
+	if($("#mail").val()==""){ 
+		$("#message").html("邮箱地址不能为空");
+		$("#mail").focus(); 
+		 return false; 
+	    } 
+	if(!$("#mail").val().match( /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){ 
+		$("#message").html("邮箱地址格式不正确！请重新输入！"); 
+		$("#mail").focus(); 
+		return false; 
+		} 
 			
 			
-			//验证电话号码
+	 //验证电话号码
 		  
-			if($("#phone").val()==""){ 
-		    $("#message").html("电话号码不能为空");
-		    $("#phone").focus(); 
-		    return false; 
-		   } 
-		    if(!$("#phone").val().match( /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/)){ 
-		    $("#message").html("手机号码格式不正确！请重新输入！"); 
-		    $("#phone").focus(); 
-		    return false; 
-		   } 
-		   
-		   
-		   
-		  return true;
+	if($("#phone").val()==""){ 
+	   $("#message").html("电话号码不能为空");
+	   $("#phone").focus(); 
+	   return false; 
+		} 
+	if(!$("#phone").val().match( /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/)){ 
+	   $("#message").html("手机号码格式不正确！请重新输入！"); 
+	   $("#phone").focus(); 
+	   return false; 
+		} 
+		    
+		//验证地址
+		    
+	 if($("#address").val()==""){
+		$("#message").html("地址不能为空");
+	    $("#address").focus(); 
+	    return false; 
+		}
+		return true;
 }
 
 function resetValue() {
@@ -258,6 +294,7 @@ function resetValue() {
 	$("#linkman").val("");
 	$("#mail").val("");
 	$("#phone").val("");
+	$("#address").val("");
 	$("#message").html("");
 }
 
@@ -273,44 +310,52 @@ function cancel()  {
 }
 
 function _editSupplierDialog() {
-    var rows =  $('#table').bootstrapTable("getSelections");
-    if (rows.length != 1) {
+	var i = 0;
+	var id;
+	$(".selCheckbox:checked").each(function() {
+		i++;
+		id = $(this).val();
+	})
+		
+    if (i != 1) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择一行记录"
     	});
     	return;
     }
+	
     $("#myModalLabel").html("修改供应商信息");
-    $("#name").val(rows[0].name);
-	$("#linkman").val(rows[0].linkman);
-	$("#mail").val(rows[0].mail);
-	$("#phone").val(rows[0].phone);
-	$("#id").val(rows[0].id);
+    
+    var rows =  $('#table').bootstrapTable("getRowByUniqueId",id);
+    
+    $("#name").val(rows.name);
+	$("#linkman").val(rows.linkman);
+	$("#mail").val(rows.mail);
+	$("#phone").val(rows.phone);
+	$("#address").val(rows.address);
+	$("#id").val(rows.id);
 	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/supplier/modify"});
 	$('#SupplierDialog').modal("show");
 }
     
 function _deleteSupplier(){
-	var rows =  $('#table').bootstrapTable("getSelections");
-    if (rows.length == 0) {
+	var strIds = new Array();
+	$(".selCheckbox:checked").each(function() {
+		strIds.push($(this).val());
+	})
+	
+    if (strIds.length == 0) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择要删除的记录"
     	});
     	return;
-    }
-    
-    var strIds=[];
-	 for(var i=0;i<rows.length;i++){
-		 strIds.push(rows[i].id);
-	 }
-	 
+    }  
 	 var ids=strIds.join(",");
-	 
 	 bootbox.confirm({
 		 size: "small",
-		 message: "确认要删除这<font color=red>" + rows.length + "</font>条菜单记录吗？",
+		 message: "确认要删除这<font color=red>" + strIds.length + "</font>条菜单记录吗？",
 		 callback: function(result) {
 			 if (result) {
 				 $.post("${pageContext.request.contextPath}/mgr/supplier/delete",{ids:ids},function(data){
@@ -342,6 +387,7 @@ function editSupplierDialog(id)  {
 	$("#linkman").val(row.linkman);
 	$("#mail").val(row.mail);
 	$("#phone").val(row.phone);
+	$("#address").val(row.address);
 	$("#id").val(row.id);
 	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/supplier/modify"});
 	$('#SupplierDialog').modal("show");
