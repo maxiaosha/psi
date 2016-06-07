@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="goodsTypeId" column="GOODS_TYPE_ID" />
 		<result property="salePrice" column="SALE_PRICE" />
 		<result property="purchasePrice" column="PURCHASE_PRICE" />
-		<result property="productionDate" column="PRODUCTION_DATE" />		
+		<!-- <result property="productionDate" column="PRODUCTION_DATE" /> -->		
 		<result property="shelfLife" column="SHELF_LIFE" />
 		<result property="spec" column="SPEC" />
 		<result property="numberUnit" column="NUMBER_UNIT" />		
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<sql id="Base_Column_List" >
 		ID, SN, NAME, GOODS_TYPE_ID, SUPPLIER_ID,SALE_PRICE,
-			PURCHASE_PRICE,PRODUCTION_DATE,SHELF_LIFE,SPEC,NUMBER_UNIT,REMARK,STOCK
+			PURCHASE_PRICE,<!-- PRODUCTION_DATE, -->SHELF_LIFE,SPEC,NUMBER_UNIT,REMARK,STOCK
 	</sql>
 	
 	<select id="getById" resultMap="GoodsResult">
@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insert">
 		insert into goods(<include refid="Base_Column_List" />)
 		 values(#{id}, #{sn}, #{name}, #{goodsTypeId}, #{supplier.id},
-		 #{salePrice}, #{purchasePrice}, #{productionDate}, #{shelfLife}, 
+		 #{salePrice}, #{purchasePrice}, <!-- #{productionDate}, --> #{shelfLife}, 
 		 #{spec}, #{numberUnit}, #{remark}, #{stock})
 	</insert>
 	
@@ -55,9 +55,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="purchasePrice != null">
 				PURCHASE_PRICE = #{purchasePrice},
 			</if>
-			<if test="productionDate != null and productionDate !=''">
+			<!-- <if test="productionDate != null and productionDate !=''">
 				PRODUCTION_DATE = #{productionDate},
-			</if>
+			</if> -->
 			<if test="shelfLife != null and shelfLife != ''">
 				SHELF_LIFE = #{shelfLife},
 			</if>
@@ -101,6 +101,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="getTotal" resultType="Long">
 		select count(*) from goods
+		<where>
+			<if test="sn != null and sn != ''">
+				and sn like CONCAT('%',#{sn},'%') 
+			</if>
+			<if test="name != null and name != ''">
+				and NAME like CONCAT('%',#{name},'%') 
+			</if>
+			<if test="supplierId != null and supplierId !=''">
+				and SUPPLIER_ID = #{supplierId}
+			</if>
+			<if test="goodsTypeId != null and goodsTypeId !=''">
+				and GOODS_TYPE_ID = #{goodsTypeId}
+			</if>
+		</where>
 	</select>
 		
 </mapper> 

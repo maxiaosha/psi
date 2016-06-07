@@ -55,4 +55,12 @@ public class MgrSystemController {
 		return mav;
 	}
 
+	@RequestMapping("/icons")
+	public ModelAndView icons() throws Exception {
+		ModelAndView mav = new ModelAndView("main");
+
+		mav.addObject("mainPage", "/WEB-INF/mgr/system/icons.jsp");
+		
+		return mav;
+	}
 }

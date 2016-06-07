@@ -21,7 +21,7 @@ public class Goods implements Serializable {
 	private Supplier supplier;				// 供应商ID
 	private Double salePrice;				// 售价
 	private Double purchasePrice;			// 进价
-	private String productionDate;			// 生产日期
+//	private String productionDate;			// 生产日期
 	private String shelfLife;				// 保质期
 	private String spec;					// 规格
 	private String numberUnit;				// 数量单位
@@ -70,12 +70,12 @@ public class Goods implements Serializable {
 	public void setPurchasePrice(Double purchasePrice) {
 		this.purchasePrice = purchasePrice;
 	}
-	public String getProductionDate() {
+/*	public String getProductionDate() {
 		return productionDate;
 	}
 	public void setProductionDate(String productionDate) {
 		this.productionDate = productionDate;
-	}
+	}*/
 	public String getShelfLife() {
 		return shelfLife;
 	}

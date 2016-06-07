@@ -154,12 +154,7 @@
   				</div>
         	</div>
         	<div class="col-sm-6">
-  				<div class="form-group">
-    			<label for="productionDate" class="col-sm-3 control-label">生产日期</label>
-    			<div class="col-sm-6">
-      				<input type="text" class="form-control" id="productionDate" name="productionDate" placeholder="生产日期">
-    			</div>
-  				</div>
+
   				<div class="form-group">
     			<label for="shelfLife" class="col-sm-3 control-label">保质期</label>
     			<div class="col-sm-6">
@@ -181,7 +176,7 @@
     			<div class="form-group">
     			<label for="remark" class="col-sm-3 control-label">备注</label>
     			<div class="col-sm-6">
-    				<textarea id="remark" name="remark" class="form-control" placeholder="备注" style="resize:none;"></textarea>
+    				<textarea id="remark" name="remark" class="form-control" placeholder="备注" row="3" style="resize:none;"></textarea>
     			</div>
   				</div>
         	</div>
@@ -241,10 +236,13 @@ $(document).ready(function() {
  	    sidePagination: "server", //服务端处理分页
  	          columns: [
  	                    {
+ 	                    	title: '<input type="checkbox" id="allCheckbox" />',
    	                      	align: 'center',
    	                        width: '3%',
    	                      	valign: 'middle',
- 	                    	checkbox: 'true'
+   	                     	formatter:function(value,row,index){
+   	                    		 return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
+   	                    	}
  	                    },
  	                   {
  	 	                      title: '商品编号',
@@ -327,17 +325,27 @@ $(document).ready(function() {
  	                	  align: 'center',
 	                      valign: 'middle',
 	                      formatter:function(value,row,index){
-	                    	  var c = '<a class="btn btn-warning btn-xs" onclick="viewGoodsDialog(\''+ row.id + '\')"><i class="fa fa-eye"></i></a> '; 
+	                    	  var v = '<a class="btn btn-warning btn-xs" onclick="viewGoodsDialog(\''+ row.id + '\')"><i class="fa fa-eye"></i></a> '; 
 	                          var e = '<a class="btn btn-info btn-xs" onclick="editGoodsDialog(\''+ row.id + '\')"><i class="fa fa-edit"></i></a> ';  
 	                          var d = '<a class="btn btn-danger btn-xs" onclick="deleteGoods(\''+ row.id +'\')"><i class="fa fa-remove"></i></a> ';  
-	                          return c+ e + d;  
+	                          return v + e + d;  
 	                      } 
  	                  }
  	              ],
  	             onPageChange:function(number, size) {
  	            	window.history.pushState(null, null, "manageGoods?page=" + number + "&pageSize=" + size); 	
+ 	             },
+ 	             onLoadSuccess:function() {
+ 	            	$('input[type="checkbox"]').iCheck({
+ 	       	         checkboxClass: 'icheckbox_minimal-blue',
+ 	       	 		});
+ 	      			$("#allCheckbox").on('ifChecked', function(event){  
+ 	      				$(".selCheckbox").iCheck('check');
+ 	      			}).on('ifUnchecked', function(event){
+ 	      				$(".selCheckbox").iCheck('uncheck');
+ 	      			});
  	             }
- 	                   
+ 	             
  	   });
 	
 
@@ -361,7 +369,8 @@ $(document).ready(function() {
 						size:"small",
 						message:data.message,
 						callback:function() {
-							location.reload(); 
+							$('#goodsTable').bootstrapTable("refresh");
+							resetValue();
 						}
 					});
 					
@@ -376,6 +385,8 @@ $(document).ready(function() {
 			}
 		})
 	})
+	
+	
 
 })
 
@@ -431,12 +442,13 @@ function validate() {
 }
 
 function resetValue() {
+	$("#allCheckbox").iCheck('uncheck');
 	$("#name").val("");
 	$("#goodsTypeId").val("");
 	$("#supplierId").prop('selectedIndex', 0);
 	$("#purchasePrice").val("");
 	$("#salePrice").val("");
-	$("#productionDate").val("");
+	//$("#productionDate").val("");
 	$("#shelfLife").val("");
 	$("#spec").val("");
 	$("#numberUnit").val("");
@@ -459,57 +471,63 @@ function cancel() {
 
 
 function _editGoodsDialog() {
-    var rows =  $('#goodsTable').bootstrapTable("getSelections");
-    if (rows.length != 1) {
+	var i = 0;
+	var id;
+	$(".selCheckbox:checked").each(function() {
+		i++;
+		id = $(this).val();
+	})
+		
+    if (i != 1) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择一行记录"
     	});
     	return;
     }
-    $("#myModalLabel").html("修改商品信息");
-    $("#name").val(rows[0].name);
-	$("#goodsTypeId").val(rows[0].goodsTypeId);
+	
+	$("#myModalLabel").html("修改商品信息");
+    
+    var row =  $('#goodsTable').bootstrapTable("getRowByUniqueId",id);
+    $("#name").val(row.name);
+	$("#goodsTypeId").val(row.goodsTypeId);
 	$("#supplierId option").map(function () {
-		if ($(this).val() == rows[0].supplier.id) {
+		if ($(this).val() == row.supplier.id) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
-	$("#purchasePrice").val(rows[0].purchasePrice);
-	$("#salePrice").val(rows[0].salePrice);
-	$("#productionDate").val(rows[0].productionDate);
-	$("#shelfLife").val(rows[0].shelfLife);
-	$("#spec").val(rows[0].spec);
-	$("#numberUnit").val(rows[0].numberUnit);
-	$("#remark").val(rows[0].remark);
+	$("#purchasePrice").val(row.purchasePrice);
+	$("#salePrice").val(row.salePrice);
+	//$("#productionDate").val(row.productionDate);
+	$("#shelfLife").val(row.shelfLife);
+	$("#spec").val(row.spec);
+	$("#numberUnit").val(row.numberUnit);
+	$("#remark").val(row.remark);
 	
 	/*  */
 	
-	$("#id").val(rows[0].id);
+	$("#id").val(id);
 	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/goods/modify"});
 	$('#GoodsDialog').modal("show");
 }
     
 function _deleteGoods() {
-	var rows =  $('#goodsTable').bootstrapTable("getSelections");
-    if (rows.length == 0) {
+	var strIds = new Array();
+	$(".selCheckbox:checked").each(function() {
+		strIds.push($(this).val());
+	})
+	
+    if (strIds.length == 0) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择要删除的记录"
     	});
     	return;
-    }
-    
-    var strIds=[];
-	 for(var i=0;i<rows.length;i++){
-		 strIds.push(rows[i].id);
-	 }
-	 
+    }  
 	 var ids=strIds.join(",");
-	 
 	 bootbox.confirm({
 		 size: "small",
-		 message: "确认要删除这<font color=red>" + rows.length + "</font>条商品记录吗？",
+		 message: "确认要删除这<font color=red>" + strIds.length + "</font>条商品记录吗？",
 		 callback: function(result) {
 			 if (result) {
 				 $.post("${pageContext.request.contextPath}/mgr/goods/delete",{ids:ids},function(data){
@@ -518,7 +536,8 @@ function _deleteGoods() {
 					    		size:"small",
 					    		message:data.message,
 					    		callback:function() {
-					    			location.reload();
+					    			$('#goodsTable').bootstrapTable("refresh");
+					    			resetValue();
 					    		}
 					    	});
 						} else{
@@ -547,7 +566,7 @@ function viewGoodsDialog(id) {
 	})
 	$("#purchasePrice").val(row.purchasePrice);
 	$("#salePrice").val(row.salePrice);
-	$("#productionDate").val(row.productionDate);
+	//$("#productionDate").val(row.productionDate);
 	$("#shelfLife").val(row.shelfLife);
 	$("#spec").val(row.spec);
 	$("#numberUnit").val(row.numberUnit);
@@ -567,7 +586,7 @@ function editGoodsDialog(id) {
 	})
 	$("#purchasePrice").val(row.purchasePrice);
 	$("#salePrice").val(row.salePrice);
-	$("#productionDate").val(row.productionDate);
+	//$("#productionDate").val(row.productionDate);
 	$("#shelfLife").val(row.shelfLife);
 	$("#spec").val(row.spec);
 	$("#numberUnit").val(row.numberUnit);
@@ -589,7 +608,7 @@ function deleteGoods(id) {
 					    		size:"small",
 					    		message:data.message,
 					    		callback:function() {
-					    			location.reload();
+					    			$('#goodsTable').bootstrapTable("refresh");
 					    		}
 					    	});
 						} else{
