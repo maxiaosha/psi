@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.ReplenishBDao">
+	<resultMap type="ReplenishB" id="ReplenishBResult">
+		<result property="id" column="ID" />
+		<result property="replenishId" column="REPLENISH_ID" />
+		<result property="num" column="NUM" />
+		<result property="goodsMoney" column="GOODS_MONEY" />
+
+		<association property="goods" column="GOODS_ID" select="com.psi.dao.GoodsDao.getById"></association>
+		<association property="supplier" column="SUPPLIER_ID" select="com.psi.dao.SupplierDao.getById"></association>
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, REPLENISH_ID, GOODS_ID,NUM, GOODS_MONEY, SUPPLIER_ID
+	</sql>
+	
+	<select id="getById" resultMap="ReplenishBResult">
+		select <include refid="Base_Column_List" /> from replenish_b where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into replenish_b(<include refid="Base_Column_List" />)
+		 values(#{id}, #{replenishId}, #{goods.id},#{num}, #{goodsMoney},#{supplier.id})
+	</insert>
+	
+	<delete id="delete">
+		delete from replenish_b where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="ReplenishB">
+		update replenish_b
+		<set>
+
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="ReplenishBResult">
+		select <include refid="Base_Column_List" />
+		from replenish_b r
+		<where>
+			<if test="replenishId != null and replenishId != ''">
+				REPLENISH_ID = #{replenishId}
+			</if>
+		</where>
+		order by GOODS_MONEY
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from replenish_b
+		<where>
+			<if test="replenishId != null and replenishId != ''">
+				REPLENISH_ID = #{replenishId}
+			</if>
+		</where>
+	</select>
+		
+</mapper> 

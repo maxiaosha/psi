@@ -140,10 +140,13 @@ $(document).ready(function() {
  	    sidePagination: "server", //服务端处理分页
  	          columns: [
  	                    {
+ 	                    	title: '<input type="checkbox" id="allCheckbox" />',
    	                      	align: 'center',
    	                     	width: '3%',
    	                      	valign: 'middle',
- 	                    	checkbox: 'true'
+   	                     	formatter:function(value,row,index){
+	                    		 return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
+	                    	}
  	                    }, 
  	                  {
  	                    title: '名称',
@@ -210,7 +213,18 @@ $(document).ready(function() {
  	              ],
  	             onPageChange:function(number, size) {
  	            	window.history.pushState(null, null, "manageMenu?page=" + number + "&pageSize=" + size); 	
+ 	             },
+ 	             onLoadSuccess:function() {
+ 	            	$('input[type="checkbox"]').iCheck({
+ 	       	         checkboxClass: 'icheckbox_minimal-blue',
+ 	       	 		});
+ 	      			$("#allCheckbox").on('ifChecked', function(event){  
+ 	      				$(".selCheckbox").iCheck('check');
+ 	      			}).on('ifUnchecked', function(event){
+ 	      				$(".selCheckbox").iCheck('uncheck');
+ 	      			});
  	             }
+ 	             
  	                   
  	   });
 	
@@ -289,6 +303,7 @@ function validate(id) {
 }
 
 function resetValue() {
+	$("#allCheckbox").iCheck('uncheck');
 	$("#name").val("");
 	$("#url").val("");
 	$("#parentId").prop('selectedIndex', 0);
@@ -311,54 +326,61 @@ function cancel() {
 }
 
 function _editMenuDialog() {
-    var rows =  $('#menuTable').bootstrapTable("getSelections");
-    if (rows.length != 1) {
+	var i = 0;
+	var id;
+	$(".selCheckbox:checked").each(function() {
+		i++;
+		id = $(this).val();
+	})
+		
+    if (i != 1) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择一行记录"
     	});
     	return;
     }
+	
     $("#myModalLabel").html("修改菜单信息");
-    $("#name").val(rows[0].name);
-	$("#url").val(rows[0].url);
+    
+	var row =  $('#menuTable').bootstrapTable("getRowByUniqueId",id);
+    $("#name").val(row.name);
+	$("#url").val(row.url);
 	$("#authorization option").map(function () {
-		if ($(this).val() == rows[0].authorization) {
+		if ($(this).val() == row.authorization) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
-	$("#orderFlag").val(rows[0].orderFlag);
+	$("#orderFlag").val(row.orderFlag);
 	$("#parentId option").map(function () {
-		if ($(this).val() == rows[0].parentId) {
+		if ($(this).val() == row.parentId) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
-	$("#icon").val(rows[0].icon);
-	$("#id").val(rows[0].id);
+	$("#icon").val(row.icon);
+	$("#id").val(row.id);
 	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/system/menu/modify"});
 	$('#MenuDialog').modal("show");
 }
     
 function _deleteMenu() {
-	var rows =  $('#menuTable').bootstrapTable("getSelections");
-    if (rows.length == 0) {
+	var strIds = new Array();
+	$(".selCheckbox:checked").each(function() {
+		strIds.push($(this).val());
+	})
+	
+    if (strIds.length == 0) {
     	bootbox.alert({
     		size:"small",
     		message:"请选择要删除的记录"
     	});
     	return;
-    }
-    
-    var strIds=[];
-	 for(var i=0;i<rows.length;i++){
-		 strIds.push(rows[i].id);
-	 }
-	 
+    }  
 	 var ids=strIds.join(",");
 	 
 	 bootbox.confirm({
 		 size: "small",
-		 message: "确认要删除这<font color=red>" + rows.length + "</font>条菜单记录吗？",
+		 message: "确认要删除这<font color=red>" + strIds.length + "</font>条菜单记录吗？",
 		 callback: function(result) {
 			 if (result) {
 				 $.post("${pageContext.request.contextPath}/mgr/system/menu/delete",{ids:ids},function(data){

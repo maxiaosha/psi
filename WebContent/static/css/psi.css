@@ -1,5 +1,7 @@
 @CHARSET "UTF-8";
 
-.table-bordered{border:1px solid #bbb;border-radius: 1px;}.table-bordered>thead>tr>th,.table-bordered>tbody>tr>th,.table-bordered>tfoot>tr>th,.table-bordered>thead>tr>td,.table-bordered>tbody>tr>td,.table-bordered>tfoot>tr>td{border:1px solid #bbb}.table-bordered>thead>tr>th,.table-bordered>thead>tr>td{border-bottom-width:2px}
+.table-bordered{border:1px solid #bbb;border-radius: 1px;}.table-bordered>thead>tr>th,.table-bordered>tbody>tr>th,.table-bordered>tfoot>tr>th,.table-bordered>thead>tr>td,.table-bordered>tbody>tr>td,.table-bordered>tfoot>tr>td{border:1px solid #bbb;}.table-bordered>thead>tr>th,.table-bordered>thead>tr>td{border-bottom-width:2px}
 
 .need {padding:8px 0px 0px 0px;;color:red;}
+
+.t_center {text-align:center;vertical-align:middle;}
