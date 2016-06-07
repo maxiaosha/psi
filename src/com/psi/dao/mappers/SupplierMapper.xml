@@ -10,11 +10,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="linkman" column="LINKMAN" />
 		<result property="mail" column="MAIL" />
 		<result property="phone" column="PHONE" />
+		<result property="address" column="ADDRESS"/>
 		
 	</resultMap>
 	
 	<sql id="Base_Column_List" >
-		ID, NAME, LINKMAN, MAIL, PHONE
+		ID, NAME, LINKMAN, MAIL, PHONE, ADDRESS
 	</sql>
 	
 	<select id="getById" resultMap="SupplierResult">
@@ -23,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<insert id="insert">
 		insert into supplier(<include refid="Base_Column_List" />)
-		 values(#{id}, #{name}, #{linkman}, #{mail}, #{phone})
+		 values(#{id}, #{name}, #{linkman}, #{mail}, #{phone}, #{address})
 	</insert>
 	
 	<delete id="delete">
@@ -45,6 +46,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="phone != null and phone !=''">
 				PHONE = #{phone},
 			</if>
+			<if test="address !=null and address !=''">
+				ADDRESS = #{address},
+			</if> 
 		</set>
 		where ID = #{id}
 	</update>

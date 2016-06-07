@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.RoleDao">
+	<resultMap type="Role" id="RoleResult">
+		<result property="id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="permission" column="PERMISSION" />
+		
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, NAME, PERMISSION
+	</sql>
+	
+	<select id="getById" resultMap="RoleResult">
+		select <include refid="Base_Column_List" /> from role where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into role(<include refid="Base_Column_List" />)
+		 values(#{id}, #{name}, #{permission})
+	</insert>
+	
+	<delete id="delete">
+		delete from role where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="Role">
+		update role
+		<set>
+			<if test="name != null and name !=''">
+				NAME = #{name},
+			</if>
+			<if test="permission != null and permission !=''">
+				PERMISSION = #{permission},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="RoleResult">
+		select <include refid="Base_Column_List" />
+		from role
+		order by NAME
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from role
+	</select>
+		
+</mapper> 

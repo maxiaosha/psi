@@ -93,13 +93,15 @@ public class MgrSupplierController {
 		if (supplier.getName() != null && !supplier.getName().trim().equals("")
 				&& supplier.getLinkman() != null && !supplier.getLinkman().trim().equals("")
 				&& supplier.getMail() != null && !supplier.getMail().trim().equals("") 
-				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")) {
+				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")
+				&& supplier.getAddress() !=null && !supplier.getAddress().trim().equals("")) {
 	
 			supplier.setId(SerialNumberUtil.getSerialNumber());
 			supplier.setName(supplier.getName().trim());
 			supplier.setLinkman(supplier.getLinkman().trim());
 			supplier.setMail(supplier.getMail().trim());
 			supplier.setPhone(supplier.getPhone().trim());
+			supplier.setAddress(supplier.getAddress().trim());
 		
 			try {
 				if (supplierService.insert(supplier) > 0) {
@@ -129,7 +131,8 @@ public class MgrSupplierController {
 		if (supplier.getName() != null && !supplier.getName().trim().equals("")
 				&& supplier.getLinkman() != null && !supplier.getLinkman().trim().equals("")
 				&& supplier.getMail() != null && !supplier.getMail().trim().equals("") 
-				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")) {
+				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")
+				&& supplier.getAddress() !=null && !supplier.getAddress().trim().equals("")) {
 		
 			if (supplierService.modify(supplier) > 0) {
 				return AjaxUtil.getStringMessage(1, "修改供应商记录成功！", null);
