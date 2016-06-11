@@ -110,11 +110,8 @@ public class MgrUserController {
 				&& user.getName() != null && !user.getName().trim().equals("")
 				&& user.getIdCard() != null && !user.getIdCard().trim().equals("")
 				&& user.getSex() != null && !user.getSex().trim().equals("")
+				&& user.getRole() != null && !user.getRole().equals("")
 				&& user.getAge() != null && !user.getAge().trim().equals("")
-				&& user.getPhone() != null && !user.getPhone().trim().equals("")
-				&& user.getEmail() != null && !user.getEmail().trim().equals("")
-				&& user.getAddress() != null && !user.getAddress().trim().equals("")
-				//&& user.getRole() != null && !user.getRole().trim().equals("")
 				){
 			user.setId(SerialNumberUtil.getSerialNumber());
 			user.setAccount(user.getAccount().trim());
@@ -157,19 +154,17 @@ public class MgrUserController {
 				&& user.getName() != null && !user.getName().trim().equals("")
 				&& user.getIdCard() != null && !user.getIdCard().trim().equals("")
 				&& user.getSex() != null && !user.getSex().trim().equals("")
-				&& user.getAge() != null && !user.getAge().trim().equals("")
-				&& user.getPhone() != null && !user.getPhone().trim().equals("")
-				&& user.getEmail() != null && !user.getEmail().trim().equals("")
-				&& user.getAddress() != null && !user.getAddress().trim().equals("")){
-			user.setPassword(CryptographyUtil.md5(user.getPassword(), "zcll"));
+				&& user.getRole() != null && !user.getRole().equals("")
+				&& user.getAge() != null && !user.getAge().trim().equals("")){
+			//user.setPassword(CryptographyUtil.md5(user.getPassword(), "zcll"));
 	
 			if (userService.modify(user) > 0) {
-				return AjaxUtil.getStringMessage(1, "修改供应商记录成功！", null);
+				return AjaxUtil.getStringMessage(1, "修改用户记录成功！", null);
 			} else {
-				return AjaxUtil.getStringMessage(0, "修改供应商记录失败！", null);
+				return AjaxUtil.getStringMessage(0, "修改用户记录失败！", null);
 			}
 		} else {
-			return AjaxUtil.getStringMessage(0, "请正确填写供应商记录信息！", null);
+			return AjaxUtil.getStringMessage(0, "请正确填写用户记录信息！", null);
 		}
 	}
 	

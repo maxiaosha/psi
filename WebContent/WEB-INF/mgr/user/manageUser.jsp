@@ -164,6 +164,9 @@
     			<div class="col-sm-6">
       				<input type="text" class="form-control" id="age" name="age" placeholder="年龄">
     			</div>
+    			    <div class="need col-sm-1">
+					*
+    			</div>
   				</div>
   			
   				<div class="form-group">
@@ -265,6 +268,7 @@ $(document).ready(function() {
  	                   {
  	 	                      title: '账号',
  	 	                      field: 'account',
+ 	 	                      width: '17%',
  	 	                      align: 'center',
  	 	                      valign: 'middle',
  	 	                     
@@ -279,6 +283,7 @@ $(document).ready(function() {
  	                  {
  	                      title: '用户姓名',
  	                      field: 'name',
+ 	                      width: '11%',
  	                      align: 'center',
  	                      valign: 'middle'
  	                  },
@@ -286,6 +291,7 @@ $(document).ready(function() {
  	                  {
  	                      title: '身份证',
  	                      field: 'idCard',
+ 	                      width: '20%',
  	                      align: 'center',
  	                      valign: 'middle'
  	                  },
@@ -293,6 +299,7 @@ $(document).ready(function() {
  	                  {
  	                      title: '性别',
  	                      field: 'sex',
+ 	                      width: '7%',
  	                      align: 'center',
  	                      valign: 'middle'
  	                  },
@@ -300,7 +307,7 @@ $(document).ready(function() {
  	                  {
  	                	  title: '年龄',
  	                	  field: 'age',
- 	                	  width: '5%',
+ 	                	  width: '7%',
  	                	  align: 'center',
  	                	  valign: 'middle'
  	                  },
@@ -329,7 +336,7 @@ $(document).ready(function() {
  	                  {
  	                      title: '角色名',
  	                      field: 'role.name',
- 	                      width: '8%',
+ 	                      width: '10%',
  	                      align: 'center',
  	                      valign: 'middle'
  	                  },
@@ -431,15 +438,64 @@ function queryParams(params) {  //配置参数
 }
 
 function validate() {
-
-		
+	if ($.trim($("#account").val()) == "") {
+		$("#message").html("请输入账号");
+		$("#account").focus();
+		return false;
+	}
+	//role.id
+	if ($.trim($("#roleId").val()) == "") {
+		$("#message").html("请选择角色");
+		$("#roleId").focus();
+		return false;
+	}
+	
+	if ($.trim($("#name").val()) == "") {
+		$("#message").html("请输入姓名");
+		$("#name").focus();
+		return false;
+	}
+	if ($.trim($("#idCard").val()) == "") {
+		$("#message").html("请输入身份证编号");
+		$("#idCard").focus();
+		return false;
+	}
+	if ($.trim($("#sex").val()) == "") {
+		$("#message").html("请输入性别");
+		$("#sex").focus();
+		return false;
+	}
+	if ($.trim($("#age").val()) == "") {
+		$("#message").html("请输入年龄");
+		$("#age").focus();
+		return false;
+	}
+	//验证邮箱地址
+	   
+	if ($.trim($("#email").val()) != "") {
+	if(!$("#email").val().match( /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){ 
+		$("#message").html("邮箱地址格式不正确！请重新输入！"); 
+		$("#email").focus(); 
+		return false; 
+		} 
+	}
+			
+			
+	 //验证电话号码
+		  
+	if ($.trim($("#phone").val()) != "") {
+	if(!$("#phone").val().match( /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/)){ 
+	   $("#message").html("手机号码格式不正确！请重新输入！"); 
+	   $("#phone").focus(); 
+	   return false; 
+		} 
+	}
 	return true;
 }
 
 function resetValue() {
 	$("#allCheckbox").iCheck('uncheck');
 	$("#account").val("");
-	$("#password").val("");
 	$("#roleId").prop('selectedIndex', 0);
 	$("#name").val("");
 	$("#idCard").val("");
@@ -485,7 +541,6 @@ function _editUserDialog() {
     
     var row =  $('#userTable').bootstrapTable("getRowByUniqueId",id);
     $("#account").val(row.account);
-	$("#password").val(row.password);
 	$("#roleId option").map(function () {
 		if ($(this).val() == row.role.id) {
 			$(this).attr({"selected" : "selected"});
@@ -551,8 +606,8 @@ function _deleteUser() {
 function viewUserDialog(id) {
     var row =  $('#userTable').bootstrapTable("getRowByUniqueId",id);
     $("#myModalLabel").html("用户详细信息");
+    $("#submit").hide();
     $("#account").val(row.account);
-	$("#password").val(row.password);
 	$("#roleId option").map(function () {
 		if ($(this).val() == row.role.id) {
 			$(this).attr({"selected" : "selected"});
@@ -572,7 +627,6 @@ function editUserDialog(id) {
     var row =  $('#userTable').bootstrapTable("getRowByUniqueId",id);
     $("#myModalLabel").html("修改用户信息");
     $("#account").val(row.account);
-	$("#password").val(row.password);
 	$("#roleId option").map(function () {
 		if ($(this).val() == row.role.id) {
 			$(this).attr({"selected" : "selected"});
@@ -593,7 +647,7 @@ function editUserDialog(id) {
 function deleteUser(id) {
 	bootbox.confirm({
 		 size: "small",
-		 message: "确认要删除这条商品记录吗？",
+		 message: "确认要删除这条用户记录吗？",
 		 callback: function(result) {
 			 if (result) {
 				 $.post("${pageContext.request.contextPath}/mgr/user/delete",{ids:id},function(data){
