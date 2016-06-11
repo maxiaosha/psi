@@ -190,15 +190,26 @@ public class MgrUserController {
 	/**
 	 * 重置密码
 	 */
-	@RequestMapping(value = "/modifyPassword", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
 	@ResponseBody
-	public String modifyPassword(HttpSession session, String password) throws Exception {
-		User user = (User) session.getAttribute("currentUser");
+	public String resetPassword( String ids) throws Exception {
+		int i = 0;
+		String[] idsStr = ids.split(",");
+		for(;i<idsStr.length;i++){
+		User user = userService.getById(idsStr[i]);
+		String idCard = user.getIdCard();
+		String password = idCard.substring(idCard.length()-8, idCard.length());
 		user.setPassword(CryptographyUtil.md5(password, "zcll"));
-		if (userService.modify(user) > 0) {
-			return  AjaxUtil.getStringMessage(1, "修改密码成功！",null);
-		} else {
-			return  AjaxUtil.getStringMessage(1, "修改密码失败！",null);
+			if (userService.modify(user) > 0) {
+				continue;
+			}else{
+				return  AjaxUtil.getStringMessage(0, "重置密码至" + i + "条记录时发生未知错误！", null);
+				
+			}
 		}
+		return AjaxUtil.getStringMessage(1,  "重置密码成功！", null);
 	}
+	
+
+	
 }

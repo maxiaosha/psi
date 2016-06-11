@@ -5,15 +5,16 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title }</div>
+                      <div class="panel panel-primary" ">
+			<div class="panel-heading" ">${requestScope.title }</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
+                        	<a class="btn btn-danger" onclick="resetPassword()"><i class="fa fa-remove"></i> 重置密码</a>
                         	<a class="btn btn-success" onclick="addUserDialog()"><i class="fa fa-plus"></i> 新增</a>
                         	<a class="btn btn-warning" onclick="searchUserToggle()"><i class="fa fa-search"></i> 查询</a>
                             <a class="btn btn-info" onclick="_editUserDialog()"><i class="fa fa-edit"></i> 修改</a>
                             <a class="btn btn-danger" onclick="_deleteUser()"><i class="fa fa-remove"></i> 删除</a>
-                            <a class="btn btn-danger" onclick="changePassword()"><i class="fa fa-remove"></i> 重置密码</a>
+                           
                             
                             <div id="searchUser" style="margin-top:15px;">
                             <form class="form-horizontal" id="searchUserForm">
@@ -38,7 +39,12 @@
   								<div class="form-group">
     								<label for="searchUserSex" class="col-sm-4 control-label" style="text-align:left;">用户性别</label>
     								<div class="col-sm-8">
-      									<input type="text" class="form-control" id="searchUserSex" name="searchUserSex" placeholder="用户性别">
+      									<select class="form-control" id="searchUserSex" name="searchUserSex" >
+      									
+      									<option value="">请选择</option>
+      									<option value="男">男</option>
+										<option value="女">女</option>
+      								</select>
     								</div>
   								</div>
   								</div>
@@ -149,7 +155,11 @@
   				<div class="form-group">
     			<label for="sex" class="col-sm-3 control-label">性别</label>
     			<div class="col-sm-6">
-      				<input type="text" class="form-control" id="sex" name="sex" placeholder="性别">
+      		<select class="form-control" id="sex" name="sex" >		
+      			<option value="">请选择</option>
+      			 <option value="男">男</option>
+					<option value="女">女</option>
+      				</select>
     			</div>
     			<div class="need col-sm-1">
 					*
@@ -201,8 +211,6 @@
     </div>
   </div>
 </div>
-
-
 
 <script>
 
@@ -603,6 +611,7 @@ function _deleteUser() {
 	 
 }
 
+//查看用户详细信息
 function viewUserDialog(id) {
     var row =  $('#userTable').bootstrapTable("getRowByUniqueId",id);
     $("#myModalLabel").html("用户详细信息");
@@ -622,7 +631,8 @@ function viewUserDialog(id) {
 	$("#address").val(row.address);
 	$('#UserDialog').modal("show");
 }
-    
+
+
 function editUserDialog(id) {
     var row =  $('#userTable').bootstrapTable("getRowByUniqueId",id);
     $("#myModalLabel").html("修改用户信息");
@@ -670,6 +680,52 @@ function deleteUser(id) {
 		 }
 	 })
 }
+
+//以下为重置密码函数
+
+//单击重置密码按钮
+function resetPassword() {
+	var strIds = new Array();
+	$(".selCheckbox:checked").each(function() {
+		strIds.push($(this).val());
+	})
+	
+    if (strIds.length == 0) {
+    	bootbox.alert({
+    		size:"small",
+    		message:"请选择要重置的密码"
+    	});
+    	return;
+    }  
+	
+	 var ids=strIds.join(",");
+	 bootbox.confirm({
+		 size: "small",
+		 message: "确认要重置这<font color=red>" + strIds.length + "</font>条记录的密码吗？",
+		 callback: function(result) {
+			 if (result) {
+				 $.post("${pageContext.request.contextPath}/mgr/user/resetPassword",{ids:ids},function(data){
+						if(data.status == 1){
+							bootbox.alert({
+					    		size:"small",
+					    		message:data.message,
+					    		callback:function() {
+					    			$('#userTable').bootstrapTable("refresh");
+					    			resetValue();
+					    		}
+					    	});
+						} else{
+							bootbox.alert({
+					    		size: "small",
+					    		message: data.message
+					    	});
+						}
+					},"json");
+			 }
+		 }
+	 })
+	}
+	
 
 
     	

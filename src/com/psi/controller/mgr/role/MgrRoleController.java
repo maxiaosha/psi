@@ -46,7 +46,7 @@ public class MgrRoleController {
 
 		ModelAndView mav = new ModelAndView("main");
 		mav.addObject("title", "½ÇÉ«¹ÜÀí");
-		mav.addObject("mainPage", "/WEB-INF/mgr/admin/manageRole.jsp");
+		mav.addObject("mainPage", "/WEB-INF/mgr/user/manageRole.jsp");
 		mav.addObject("roleList", roleList);
 		
 		return mav;
@@ -62,7 +62,7 @@ public class MgrRoleController {
 	 * @throws Exception
 	 * 
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET,produces = "application/json; character=utf-8")
+	@RequestMapping(value = "/list", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String list(String limit,String offset,HttpServletRequest request)throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -91,7 +91,7 @@ public class MgrRoleController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/add", method = RequestMethod.POST,produces = "application/json;character=utf-8")
+	@RequestMapping(value = "/add", method = RequestMethod.POST,produces = "application/json;charset=utf-8")
 	 @ResponseBody
 	 public String add(Role role) throws Exception {
 		if (role.getName() != null && !role.getName().trim().equals("")
