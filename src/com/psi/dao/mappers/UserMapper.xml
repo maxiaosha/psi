@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.UserDao">
+	<resultMap type="User" id="UserResult">
+		<result property="id" column="ID" />
+		<result property="account" column="ACCOUNT" />
+		<result property="password" column="PASSWORD" />
+		<result property="name" column="NAME" />
+		<result property="idCard" column="ID_CARD" />
+		<result property="sex" column="SEX" />
+		<result property="age" column="AGE" />
+		<result property="phone" column="PHONE" />
+		<result property="email" column="EMAIL" />		
+		<result property="address" column="ADDRESS" />
+		<association property="role" column="ROLE_ID" select="com.psi.dao.RoleDao.getById"></association>
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, ACCOUNT, PASSWORD, NAME, ID_CARD, SEX, AGE, PHONE, EMAIL, ADDRESS, ROLE_ID
+	</sql>
+	
+	<select id="getById" resultMap="UserResult">
+		select <include refid="Base_Column_List" /> from user where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into user(<include refid="Base_Column_List" />)
+		 values(#{id}, #{account}, #{password}, #{name}, #{idCard}, #{sex}, 
+		 #{age}, #{phone}, #{email}, #{address}, #{role.id})
+	</insert>
+	
+	<delete id="delete">
+		delete from user where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="user">
+		update user
+		<set>
+			<if test="account != null and account !=''">
+				ACCOUNT = #{account},
+			</if>
+			<if test="password != null and password != ''">
+				PASSWORD = #{password},
+			</if>
+			<if test="name != null and name != ''">
+				NAME = #{name},
+			</if>
+			<if test="idCard != null and idCard != ''">
+				ID_CARD = #{idCard},
+			</if>
+			<if test="sex != null and sex != ''">
+				SEX = #{sex},
+			</if>
+			<if test="age != null and age != ''">
+				AGE = #{age},
+			</if>
+			<if test="phone != null and phone != ''">
+				PHONE = #{phone},
+			</if>
+			<if test="email != null and email != ''">
+				EMAIL = #{email},
+			</if>
+			<if test="address != null and address != ''">
+				ADDRESS = #{address},
+			</if>
+			<if test="role.id != null and role.id != ''">
+				ROLE_ID = #{role.id},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="UserResult">
+		select <include refid="Base_Column_List" />
+		from user 
+		<where>
+			<if test="account != null and account != ''">
+				and ACCOUNT = #{account} 
+			</if>
+			<if test="name != null and name != ''">
+				and NAME like CONCAT('%',#{name},'%') 
+			</if>
+			<if test="sex != null and sex !=''">
+				and SEX = #{sex}
+			</if>
+			<if test="roleId != null and roleId !=''">
+				and ROLE_ID = #{roleId}
+			</if>
+		</where>
+		<if test="start != null and size != null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from user
+		<where>
+			<if test="account != null and account != ''">
+				and ACCOUNT = #{account} 
+			</if>
+			<if test="name != null and name != ''">
+				and NAME like CONCAT('%',#{name},'%') 
+			</if>
+			<if test="sex != null and sex !=''">
+				and SEX = #{sex}
+			</if>
+			<if test="roleId != null and roleId !=''">
+				and ROLE_ID = #{roleId}
+			</if>
+		</where>
+	</select>
+		
+</mapper> 

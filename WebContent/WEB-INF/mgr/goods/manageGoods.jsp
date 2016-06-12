@@ -336,9 +336,13 @@ $(document).ready(function() {
  	            	window.history.pushState(null, null, "manageGoods?page=" + number + "&pageSize=" + size); 	
  	             },
  	             onLoadSuccess:function() {
- 	            	$('input[type="checkbox"]').iCheck({
- 	       	         checkboxClass: 'icheckbox_minimal-blue',
- 	       	 		});
+ 	         		$('#allCheckbox').iCheck({
+ 	      	         checkboxClass: 'icheckbox_minimal-blue',
+ 	      	 		});
+ 	           		$('.selCheckbox').iCheck({
+ 	         	         checkboxClass: 'icheckbox_minimal-blue',
+ 	         	 		});
+ 	            	
  	      			$("#allCheckbox").on('ifChecked', function(event){  
  	      				$(".selCheckbox").iCheck('check');
  	      			}).on('ifUnchecked', function(event){
