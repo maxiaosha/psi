@@ -21,6 +21,7 @@ import com.psi.utils.AjaxUtil;
 import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
 import com.psi.utils.SnUtil;
+import com.psi.utils.ValidateUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -106,6 +107,7 @@ public class MgrGoodsController {
 	@RequestMapping(value = "/add",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String add(Goods goods) throws Exception {
+			if(ValidateUtil.validateGoods(goods)==true){
 			try {
 				goods.setId(SerialNumberUtil.getSerialNumber());
 				goods.setSn(SnUtil.createSn("GD"));
@@ -116,6 +118,9 @@ public class MgrGoodsController {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				return AjaxUtil.getStringMessage(0, "添加商品记录失败！", null);
+			}
+			}else{
 				return AjaxUtil.getStringMessage(0, "添加商品记录失败！", null);
 			}
 	
@@ -130,6 +135,7 @@ public class MgrGoodsController {
 	@RequestMapping(value = "/modify",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String modify(Goods goods) throws Exception {
+			if(ValidateUtil.validateGoods(goods)==true){
 			try {	
 				if (goodsService.modify(goods) > 0) {
 					return AjaxUtil.getStringMessage(1, "修改商品记录成功！", null);
@@ -138,6 +144,9 @@ public class MgrGoodsController {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				return AjaxUtil.getStringMessage(0, "修改商品记录失败！", null);
+			}
+			}else{
 				return AjaxUtil.getStringMessage(0, "修改商品记录失败！", null);
 			}
 	}

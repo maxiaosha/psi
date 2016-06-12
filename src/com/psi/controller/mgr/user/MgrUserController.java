@@ -25,6 +25,7 @@ import com.psi.service.UserService;
 import com.psi.utils.AjaxUtil;
 import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
+import com.psi.utils.ValidateUtil;
 
 /**
  * 用户管理Controller层
@@ -106,13 +107,7 @@ public class MgrUserController {
 	@RequestMapping(value = "/add",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String add(User user) throws Exception{
-		if(user.getAccount() != null && !user.getAccount().trim().equals("")
-				&& user.getName() != null && !user.getName().trim().equals("")
-				&& user.getIdCard() != null && !user.getIdCard().trim().equals("")
-				&& user.getSex() != null && !user.getSex().trim().equals("")
-				&& user.getRole() != null && !user.getRole().equals("")
-				&& user.getAge() != null && !user.getAge().trim().equals("")
-				){
+		if(ValidateUtil.validateUser(user)==true){
 			user.setId(SerialNumberUtil.getSerialNumber());
 			user.setAccount(user.getAccount().trim());
 			user.setName(user.getName().trim());
@@ -150,12 +145,7 @@ public class MgrUserController {
 	@RequestMapping(value = "/modify",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String modify(User user) throws Exception {
-		if(user.getAccount() != null && !user.getAccount().trim().equals("")
-				&& user.getName() != null && !user.getName().trim().equals("")
-				&& user.getIdCard() != null && !user.getIdCard().trim().equals("")
-				&& user.getSex() != null && !user.getSex().trim().equals("")
-				&& user.getRole() != null && !user.getRole().equals("")
-				&& user.getAge() != null && !user.getAge().trim().equals("")){
+		if(ValidateUtil.validateUser(user)==true){
 			//user.setPassword(CryptographyUtil.md5(user.getPassword(), "zcll"));
 	
 			if (userService.modify(user) > 0) {

@@ -18,6 +18,7 @@ import com.psi.service.SupplierService;
 import com.psi.utils.AjaxUtil;
 import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
+import com.psi.utils.ValidateUtil;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -90,12 +91,7 @@ public class MgrSupplierController {
 	@RequestMapping(value = "/add",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String add(Supplier supplier) throws Exception {
-		if (supplier.getName() != null && !supplier.getName().trim().equals("")
-				&& supplier.getLinkman() != null && !supplier.getLinkman().trim().equals("")
-				&& supplier.getMail() != null && !supplier.getMail().trim().equals("") 
-				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")
-				&& supplier.getAddress() !=null && !supplier.getAddress().trim().equals("")) {
-	
+		if (ValidateUtil.validateSupplier(supplier)) {
 			supplier.setId(SerialNumberUtil.getSerialNumber());
 			supplier.setName(supplier.getName().trim());
 			supplier.setLinkman(supplier.getLinkman().trim());
@@ -128,12 +124,7 @@ public class MgrSupplierController {
 	@RequestMapping(value = "/modify",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String modify(Supplier supplier) throws Exception {
-		if (supplier.getName() != null && !supplier.getName().trim().equals("")
-				&& supplier.getLinkman() != null && !supplier.getLinkman().trim().equals("")
-				&& supplier.getMail() != null && !supplier.getMail().trim().equals("") 
-				&& supplier.getPhone() !=null && !supplier.getPhone().trim().equals("")
-				&& supplier.getAddress() !=null && !supplier.getAddress().trim().equals("")) {
-		
+		if (ValidateUtil.validateSupplier(supplier)) {
 			if (supplierService.modify(supplier) > 0) {
 				return AjaxUtil.getStringMessage(1, "修改供应商记录成功！", null);
 			} else {

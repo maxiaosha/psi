@@ -184,11 +184,17 @@
     			<div class="col-sm-6">
       				<input type="text" class="form-control" id="phone" name="phone" placeholder="手机">
     			</div>
+    			<div class="need col-sm-1">
+					*
+    			</div>
   				</div>
   				<div class="form-group">
     			<label for="email" class="col-sm-3 control-label">邮箱</label>
     			<div class="col-sm-6">
       				<input type="text" class="form-control" id="email" name="email" placeholder="邮箱">
+    			</div>
+    			<div class="need col-sm-1">
+					*
     			</div>
     			</div>
     			<div class="form-group">
@@ -463,11 +469,19 @@ function validate() {
 		$("#name").focus();
 		return false;
 	}
+	//验证身份证
 	if ($.trim($("#idCard").val()) == "") {
 		$("#message").html("请输入身份证编号");
 		$("#idCard").focus();
 		return false;
 	}
+	if(!$("#idCard").val().match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)){ 
+		$("#message").html("身份证编号格式不正确！请重新输入！"); 
+		$("#idCard").focus(); 
+		return false; 
+	}
+	
+	
 	if ($.trim($("#sex").val()) == "") {
 		$("#message").html("请输入性别");
 		$("#sex").focus();
@@ -478,26 +492,35 @@ function validate() {
 		$("#age").focus();
 		return false;
 	}
-	//验证邮箱地址
-	   
-	if ($.trim($("#email").val()) != "") {
-	if(!$("#email").val().match( /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){ 
-		$("#message").html("邮箱地址格式不正确！请重新输入！"); 
-		$("#email").focus(); 
-		return false; 
-		} 
-	}
-			
-			
+	
 	 //验证电话号码
 		  
-	if ($.trim($("#phone").val()) != "") {
+	if ($.trim($("#phone").val()) == "") {
+		$("#message").html("请输入电话号码");
+		$("#phone").focus();
+		return false;
+	}
 	if(!$("#phone").val().match( /^(((13[0-9]{1})|(14[0-9]{1})|(17[0]{1})|(15[0-3]{1})|(15[5-9]{1})|(18[0-9]{1}))+\d{8})$/)){ 
 	   $("#message").html("手机号码格式不正确！请重新输入！"); 
 	   $("#phone").focus(); 
 	   return false; 
-		} 
+		
 	}
+	
+	//验证邮箱地址
+	   
+	if ($.trim($("#email").val()) == "") {
+		$("#message").html("请输入邮箱地址");
+		$("#email").focus();
+		return false;
+	}
+	if(!$("#email").val().match( /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/)){ 
+		$("#message").html("邮箱地址格式不正确！请重新输入！"); 
+		$("#email").focus(); 
+		return false; 
+		
+	}
+			
 	return true;
 }
 
