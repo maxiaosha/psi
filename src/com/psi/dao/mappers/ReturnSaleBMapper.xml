@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.ReturnSaleBDao">
+	<resultMap type="ReturnSaleB" id="ReturnSaleBResult">
+		<result property="id" column="ID" />
+		<result property="returnSaleId" column="RETURN_SALE_ID" />
+		<result property="num" column="NUM" />
+		<result property="goodsMoney" column="GOODS_MONEY" />
+
+		<association property="saleB" column="SALE_B_ID" select="com.psi.dao.SaleBDao.getById"></association>
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, RETURN_SALE_ID, NUM, GOODS_MONEY, SALE_B_ID
+	</sql>
+	
+	<select id="getById" resultMap="ReturnSaleBResult">
+		select <include refid="Base_Column_List" /> from return_sale_b where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into return_sale_b(<include refid="Base_Column_List" />)
+		 values(#{id}, #{returnSaleId}, #{num}, #{goodsMoney}, #{saleB.id})
+	</insert>
+	
+	<delete id="delete">
+		delete from return_sale_b where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="ReturnSaleB">
+		update return_sale_b
+		<set>
+
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="ReturnSaleBResult">
+		select <include refid="Base_Column_List" />
+		from return_sale_b 
+		<where>
+			<if test="returnSaleId != null and returnSaleId != ''">
+				and RETURN_SALE_ID = #{returnSaleId}
+			</if>
+				
+		</where>
+		order by GOODS_MONEY
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from return_sale_b
+		<where>
+			<if test="returnSaleId != null and returnSaleId != ''">
+				and RETURN_SALE_ID = #{returnSaleId}
+			</if>
+		</where>
+	</select>
+		
+</mapper> 

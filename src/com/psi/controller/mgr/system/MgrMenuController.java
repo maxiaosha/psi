@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.psi.entity.Menu;
+import com.psi.entity.Role;
 import com.psi.service.MenuService;
+import com.psi.service.RoleService;
 import com.psi.utils.AjaxUtil;
 import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
@@ -34,6 +36,8 @@ public class MgrMenuController {
 	
 	@Autowired
 	private MenuService menuService;
+	@Autowired
+	private RoleService roleService;
 	
 	/**
 	 * 菜单管理页面
@@ -43,11 +47,26 @@ public class MgrMenuController {
 	@RequestMapping("/manageMenu")
 	public ModelAndView manageMenu() throws Exception {
 		List<Menu> menuList = menuService.queryList(null);
+		List<Role> roleList = roleService.queryList(null);
 
 		ModelAndView mav = new ModelAndView("main");
 		mav.addObject("title", "菜单管理");
 		mav.addObject("mainPage", "/WEB-INF/mgr/system/menu/manageMenu.jsp");
 		mav.addObject("menuList", menuList);
+		
+		List<Menu> list1 = menuService.selectMenuByParentId("");
+		for (Menu menu1 : list1) {
+			List<Menu> list2 = menuService.selectMenuByParentId(menu1.getId());
+			menu1.setChildList(list2);
+				
+			for (Menu menu2 : list2) {
+				List<Menu> list3 = menuService.selectMenuByParentId(menu2.getId());
+				menu2.setChildList(list3);
+			}
+		}
+		
+		mav.addObject("roleList", roleList);
+		mav.addObject("list", list1);
 		
 		return mav;
 	}
@@ -73,11 +92,7 @@ public class MgrMenuController {
 		JSONArray jsonArray = new JSONArray();
 		
 		for (Menu menu : menuList) {
-			if(menu.getAuthorization().equals("1")) {
-				menu.setAuthorization("管理员");
-			} else {
-				menu.setAuthorization("普通员工");
-			}
+
 			jsonArray.add(menu);
 		}
 		result.put("rows", jsonArray);
@@ -99,8 +114,8 @@ public class MgrMenuController {
 				&& menu.getName() != null && !menu.getName().trim().equals("")
 				&& menu.getOrderFlag() != null && !menu.getOrderFlag().trim().equals("") 
 				&& menu.getOrderFlag().trim().length() <= 2) {
-			if (menu.getParentId() != null && !menu.getParentId().trim().equals("")) {
-				Menu menutemp = menuService.getById(menu.getParentId());
+			if (menu.getParentMenu() != null && !menu.getParentMenu().getId().trim().equals("")) {
+				Menu menutemp = menuService.getById(menu.getParentMenu().getId());
 				menu.setLevel((Integer.parseInt(menutemp.getLevel()) + 1) + "");
 			} else {
 				menu.setLevel("1");
@@ -109,7 +124,7 @@ public class MgrMenuController {
 			menu.setId(SerialNumberUtil.getSerialNumber());
 			menu.setName(menu.getName().trim());
 			menu.setUrl(menu.getUrl().trim());
-			menu.setParentId(menu.getParentId().trim());	
+			//menu.setParentMenu(menu.getParentMenu());	
 			menu.setOrderFlag(menu.getOrderFlag().trim());
 			try {
 				if (menuService.insert(menu) > 0) {
@@ -138,10 +153,10 @@ public class MgrMenuController {
 		if (menu.getUrl() != null && !menu.getUrl().trim().equals("")
 				&& menu.getName() != null && !menu.getName().trim().equals("")
 				&& menu.getOrderFlag() != null && !menu.getOrderFlag().trim().equals("") 
-				&& menu.getOrderFlag().trim().length() <= 2 && !menu.getId().equals(menu.getParentId())) {
+				&& menu.getOrderFlag().trim().length() <= 2 && !menu.getId().equals(menu.getParentMenu().getId())) {
 		
-			if (!menu.getParentId().trim().equals("")) {
-				Menu menutemp = menuService.getById(menu.getParentId());
+			if (!menu.getParentMenu().getId().trim().equals("")) {
+				Menu menutemp = menuService.getById(menu.getParentMenu().getId());
 				menu.setLevel((Integer.parseInt(menutemp.getLevel()) + 1) + "");
 			} else {
 				menu.setLevel("1");

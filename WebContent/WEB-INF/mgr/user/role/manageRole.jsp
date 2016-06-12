@@ -5,8 +5,8 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title}</div>
+                      <div class="panel">
+			<div class="panel-heading">${requestScope.title}</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                         	<a class="btn btn-success" onclick="addRoleDialog()"><i class="fa fa-plus"></i> 新增</a>
@@ -110,12 +110,21 @@ $(document).ready(function() {
                     {
                     	title: '<input type="checkbox" id="allCheckbox" />',
 	                    align: 'center',
-	                    width: '3%',
+	                    width: '1%',
 	                    valign: 'middle',
 	                    formatter:function(value,row,index){
 	                    return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
 	                   }
                     },
+	                    {
+	                    	title: '序号',
+	                    	width: '1%',
+	                      	align: 'center',
+	                      	valign: 'middle',
+	                     	formatter:function(value,row,index){
+	                    		 return index + 1;
+	                    	}
+	                    },
  	                  {
  	                    title: '名称',
  	                      field: 'name',

@@ -23,8 +23,8 @@ import com.psi.utils.PageUtil;
 import com.psi.utils.SerialNumberUtil;
 
 /**
- * ½ÇÉ«¹ÜÀíController²ã
- * @author ³ÂÅà±ó
+ * è§’è‰²ç®¡ç†Controllerå±‚
+ * @author é™ˆåŸ¹æ–Œ
  *
  */
 
@@ -36,7 +36,7 @@ public class MgrRoleController {
 	private RoleService roleService;
 	
 	/**
-	 * ½ÇÉ«¹ÜÀí½çÃæ
+	 * è§’è‰²ç®¡ç†ç•Œé¢
 	 * @return
 	 * @throws Exception
 	 */
@@ -45,8 +45,9 @@ public class MgrRoleController {
 		List<Role> roleList = roleService.queryList(null);
 
 		ModelAndView mav = new ModelAndView("main");
-		mav.addObject("title", "½ÇÉ«¹ÜÀí");
-		mav.addObject("mainPage", "/WEB-INF/mgr/user/manageRole.jsp");
+		mav.addObject("title", "è§’è‰²ç®¡ç†");
+		mav.addObject("mainPage", "/WEB-INF/mgr/user/role/manageRole.jsp");
+
 		mav.addObject("roleList", roleList);
 		
 		return mav;
@@ -54,7 +55,7 @@ public class MgrRoleController {
 	}
 	
 	/**
-	 * ·ÖÒ³²éÕÒ½ÇÉ«¼ÇÂ¼
+	 * åˆ†é¡µæŸ¥æ‰¾è§’è‰²è®°å½•
 	 * @param offsets
 	 * @param limit
 	 * @param page
@@ -86,7 +87,7 @@ public class MgrRoleController {
 	}
 	
 	/**
-	 * Ìí¼Ó½ÇÉ«¼ÇÂ¼
+	 * æ·»åŠ è§’è‰²è®°å½•
 	 * @param role
 	 * @return
 	 * @throws Exception
@@ -101,22 +102,22 @@ public class MgrRoleController {
 			role.setPermission(role.getPermission().trim());
 			try {
 				if (roleService.insert(role) > 0) {
-					return AjaxUtil.getStringMessage(1, "Ìí¼Ó½ÇÉ«¼ÇÂ¼³É¹¦£¡", null);
+					return AjaxUtil.getStringMessage(1, "æ·»åŠ è§’è‰²è®°å½•æˆåŠŸï¼", null);
 				} else {
-					return AjaxUtil.getStringMessage(0, "Ìí¼Ó½ÇÉ«¼ÇÂ¼Ê§°Ü£¡", null);
+					return AjaxUtil.getStringMessage(0, "æ·»åŠ è§’è‰²è®°å½•å¤±è´¥ï¼", null);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return AjaxUtil.getStringMessage(0, "Ìí¼Ó½ÇÉ«¼ÇÂ¼Ê§°Ü£¡", null);
+				return AjaxUtil.getStringMessage(0, "æ·»åŠ è§’è‰²è®°å½•å¤±è´¥ï¼", null);
 			}
 		} else {
-			return AjaxUtil.getStringMessage(0, "ÇëÕıÈ·ÌîĞ´½ÇÉ«¼ÇÂ¼ĞÅÏ¢£¡", null);
+			return AjaxUtil.getStringMessage(0, "è¯·æ­£ç¡®å¡«å†™è§’è‰²è®°å½•ä¿¡æ¯ï¼", null);
 		}	
 		
 	}
 	
 	/**
-	 * ĞŞ¸Ä½ÇÉ«¼ÇÂ¼
+	 * ä¿®æ”¹è§’è‰²è®°å½•
 	 * @param role
 	 * @return
 	 * @throws Exception
@@ -128,17 +129,17 @@ public class MgrRoleController {
 				&& role.getPermission() != null && !role.getPermission().trim().equals("") ) {
 		
 			if (roleService.modify(role) > 0) {
-				return AjaxUtil.getStringMessage(1, "ĞŞ¸Ä½ÇÉ«¼ÇÂ¼³É¹¦£¡", null);
+				return AjaxUtil.getStringMessage(1, "ä¿®æ”¹è§’è‰²è®°å½•æˆåŠŸï¼", null);
 			} else {
-				return AjaxUtil.getStringMessage(0, "ĞŞ¸Ä½ÇÉ«¼ÇÂ¼Ê§°Ü£¡", null);
+				return AjaxUtil.getStringMessage(0, "ä¿®æ”¹è§’è‰²è®°å½•å¤±è´¥ï¼", null);
 			}
 		} else {
-			return AjaxUtil.getStringMessage(0, "ÇëÕıÈ·ÌîĞ´½ÇÉ«¼ÇÂ¼ĞÅÏ¢£¡", null);
+			return AjaxUtil.getStringMessage(0, "è¯·æ­£ç¡®å¡«å†™è§’è‰²è®°å½•ä¿¡æ¯ï¼", null);
 		}
 		
 	}
 	/**
-	 * É¾³ı½ÇÉ«¼ÇÂ¼
+	 * åˆ é™¤è§’è‰²è®°å½•
 	 */
 	@RequestMapping(value = "/delete",  method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
@@ -149,9 +150,9 @@ public class MgrRoleController {
 			if (roleService.delete(idsStr[i]) > 0){
 				continue;
 			} else {
-				return  AjaxUtil.getStringMessage(0, "É¾³ıÖÁ" + i + "Ìõ¼ÇÂ¼Ê±·¢ÉúÎ´Öª´íÎó£¡", null);
+				return  AjaxUtil.getStringMessage(0, "åˆ é™¤è‡³" + i + "æ¡è®°å½•æ—¶å‘ç”ŸæœªçŸ¥é”™è¯¯ï¼", null);
 			}
 		}
-		return AjaxUtil.getStringMessage(1, i + "Ìõ¼ÇÂ¼É¾³ı³É¹¦£¡", null);
+		return AjaxUtil.getStringMessage(1, i + "æ¡è®°å½•åˆ é™¤æˆåŠŸï¼", null);
 	}
 }

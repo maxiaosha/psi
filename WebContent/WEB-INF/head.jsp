@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" %>
+﻿<%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -23,20 +23,40 @@
           <!-- Navbar Right Menu -->
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-              <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i> 枫树下</span> <i class="fa fa-caret-down" ></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> 修改密码</a>
-                        </li>
-                   
-                        <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> 登出</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
+				<li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="${pageContext.request.contextPath}/static/head_image/default.jpg" class="user-image" alt="User Image">
+              <span class="hidden-xs">枫树下</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="${pageContext.request.contextPath}/static/head_image/default.jpg" class="img-circle" alt="User Image">
+
+                <p>
+                  管理员
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">修改资料</a>
+                </div>
+                <div class="pull-right">
+                  <a href="#" class="btn btn-default btn-flat">登出</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>
+
 
             </ul>
           </div>
@@ -47,7 +67,16 @@
       <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-         
+<div class="user-panel">
+        <div class="pull-left image">
+          <img src="${pageContext.request.contextPath}/static/head_image/default.jpg" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>枫树下</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> 在线</a>
+        </div>
+      </div>         
+
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">超市进销存管理系统</li>
@@ -55,7 +84,7 @@
             	<c:set var="size1" value="${fn:length(menu1.childList) }" />
             	<c:set var="theString" value="${pageContext.request.requestURL }" />
             	<c:choose>
-            		<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu1.key)}">
+            		<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu1.url)}">
             			<li class="treeview active">
             		</c:when>
             		<c:otherwise>
@@ -72,7 +101,7 @@
 					<c:forEach var="menu2" items="${menu1.childList }">
 						<c:set var="size2" value="${fn:length(menu2.childList) }" />
 						<c:choose>
-            				<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu2.key)}">
+            				<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu2.url)}">
 						<li class="active">
 							</c:when>
 							<c:otherwise>
@@ -88,7 +117,7 @@
 							<ul class="treeview-menu">
 							<c:forEach var="menu3" items="${menu2.childList }">
 								<c:choose>
-            						<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu3.key)}">
+            						<c:when test="${fn:containsIgnoreCase(requestScope.mainPage, menu3.url)}">
 								<li class="active">
 									</c:when>
 									<c:otherwise>

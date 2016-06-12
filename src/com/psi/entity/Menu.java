@@ -17,12 +17,12 @@ public class Menu implements Serializable {
 	
 	private String id;				// 菜单ID
 	private String level;			// 菜单层数
-	private String parentId;		// 父ID
+	private Menu parentMenu;		// 父ID
 	private String name;			// 菜单名称
 	private String url;				// 菜单URL
 	private String orderFlag;		// 排序优先级
 	private String icon;			// 菜单图标-class
-	private String authorization;	// 权限
+	private Role role;	// 权限
 	
 	private String parentName;		// 父级菜单名称-非数据库实际属性
 	private List<Menu> childList;	// 子级菜单List-非数据库实际属性
@@ -40,11 +40,12 @@ public class Menu implements Serializable {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	public String getParentId() {
-		return parentId;
+	
+	public Menu getParentMenu() {
+		return parentMenu;
 	}
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
+	public void setParentMenu(Menu parentMenu) {
+		this.parentMenu = parentMenu;
 	}
 	public String getName() {
 		return name;
@@ -70,11 +71,12 @@ public class Menu implements Serializable {
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
-	public String getAuthorization() {
-		return authorization;
+	
+	public Role getRole() {
+		return role;
 	}
-	public void setAuthorization(String authorization) {
-		this.authorization = authorization;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	public String getParentName() {
 		return parentName;

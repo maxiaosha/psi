@@ -6,16 +6,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.psi.dao.ReplenishBDao">
 	<resultMap type="ReplenishB" id="ReplenishBResult">
 		<result property="id" column="ID" />
-		<result property="replenishId" column="REPLENISH_ID" />
+		<result property="productionDate" column="PRODUCTION_DATE" />
 		<result property="num" column="NUM" />
 		<result property="goodsMoney" column="GOODS_MONEY" />
 
+		<association property="replenish" column="REPLENISH_ID" select="com.psi.dao.ReplenishDao.getById"></association>
 		<association property="goods" column="GOODS_ID" select="com.psi.dao.GoodsDao.getById"></association>
 		<association property="supplier" column="SUPPLIER_ID" select="com.psi.dao.SupplierDao.getById"></association>
 	</resultMap>
 	
 	<sql id="Base_Column_List" >
-		ID, REPLENISH_ID, GOODS_ID,NUM, GOODS_MONEY, SUPPLIER_ID
+		ID, REPLENISH_ID, GOODS_ID, PRODUCTION_DATE, NUM, GOODS_MONEY, SUPPLIER_ID
 	</sql>
 	
 	<select id="getById" resultMap="ReplenishBResult">
@@ -24,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<insert id="insert">
 		insert into replenish_b(<include refid="Base_Column_List" />)
-		 values(#{id}, #{replenishId}, #{goods.id},#{num}, #{goodsMoney},#{supplier.id})
+		 values(#{id}, #{replenish.id}, #{goods.id}, #{productionDate}, #{num}, #{goodsMoney},#{supplier.id})
 	</insert>
 	
 	<delete id="delete">

@@ -2,6 +2,11 @@ package com.psi.entity;
 
 import java.io.Serializable;
 
+/**
+ * 进货单商品实体类
+ * @author 曾宇康
+ *
+ */
 public class ReplenishB implements Serializable {
 	/**
 	 * 
@@ -9,9 +14,10 @@ public class ReplenishB implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String id;						// id
-	private String replenishId;				// 进货单ID
+	private Replenish replenish;				// 进货单ID
 	private Goods goods;					// 商品
 	private Supplier supplier;				// 供应商
+	private String productionDate;			// 该商品批次生产日期
 	private String num;						// 该商品进货数量
 	private Double goodsMoney;				// 该商品总额
 
@@ -21,11 +27,17 @@ public class ReplenishB implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getReplenishId() {
-		return replenishId;
+	public Replenish getReplenish() {
+		return replenish;
 	}
-	public void setReplenishId(String replenishId) {
-		this.replenishId = replenishId;
+	public void setReplenish(Replenish replenish) {
+		this.replenish = replenish;
+	}
+	public String getProductionDate() {
+		return productionDate;
+	}
+	public void setProductionDate(String productionDate) {
+		this.productionDate = productionDate;
 	}
 	public String getNum() {
 		return num;
