@@ -7,18 +7,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="Menu" id="MenuResult">
 		<result property="id" column="ID" />
 		<result property="level" column="LEVEL" />
-		<result property="parentId" column="PARENT_ID" />
 		<result property="name" column="NAME" />
 		<result property="url" column="URL" />
 		<result property="orderFlag" column="ORDER_FLAG" />
 		<result property="icon" column="ICON" />
-		<result property="authorization" column="AUTHORIZATION" />
-		
-		<result property="parentName" column="PARENT_NAME" />
+
+		<association property="parentMenu" column="PARENT_ID" select="com.psi.dao.MenuDao.getById"></association>
+		<association property="role" column="ROLE_ID" select="com.psi.dao.RoleDao.getById"></association>
 	</resultMap>
 	
 	<sql id="Base_Column_List" >
-		ID, LEVEL, PARENT_ID, NAME, URL,ORDER_FLAG,ICON,AUTHORIZATION
+		ID, LEVEL, PARENT_ID, NAME, URL,ORDER_FLAG,ICON,ROLE_ID
 	</sql>
 	
 	<select id="getById" resultMap="MenuResult">
@@ -27,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<insert id="insert">
 		insert into menu(<include refid="Base_Column_List" />)
-		 values(#{id}, #{level}, #{parentId}, #{name}, #{url},#{orderFlag},#{icon},#{authorization})
+		 values(#{id}, #{level}, #{parentMenu.id}, #{name}, #{url},#{orderFlag},#{icon},#{role.id})
 	</insert>
 	
 	<delete id="delete">
@@ -40,8 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="level != null and level !=''">
 				LEVEL = #{level},
 			</if>
-			<if test="parentId != null">
-				PARENT_ID = #{parentId},
+			<if test="parentMenu.id != null">
+				PARENT_ID = #{parentMenu.id},
 			</if>
 			<if test="name != null and name !=''">
 				NAME = #{name},
@@ -55,17 +54,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="icon != null">
 				ICON = #{icon},
 			</if>
-			<if test="authorization != null">
-				AUTHORIZATION = #{authorization},
+			<if test="role.id != null">
+				ROLE_ID = #{role.id},
 			</if>
 		</set>
 		where ID = #{id}
 	</update>
 	  
 	<select id="queryList" resultMap="MenuResult">
-		select <include refid="Base_Column_List" />,(select NAME from menu p where p.ID = m.PARENT_ID) PARENT_NAME
+		select <include refid="Base_Column_List" />
 		from menu m
 		order by LEVEL,ORDER_FLAG
+
 		<if test="start!=null and size!=null">
 			limit #{start},#{size}
 		</if>

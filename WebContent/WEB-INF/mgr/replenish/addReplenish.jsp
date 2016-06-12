@@ -5,13 +5,13 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title }</div>
+                      <div class="panel">
+			<div class="panel-heading">${requestScope.title }</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                         
                       	<a class="btn btn-success" onclick="submitReplenish();"><i class="fa fa-save"></i> 保存</a>
-                            <a class="btn btn-default" href="${pageContext.request.contextPath}/mgr/goods/replenish/replenishList"><i class="fa fa-reply"></i> 取消</a>&nbsp;<span id="g_message" style="color:red;"></span>
+                            <a class="btn btn-default" href="${pageContext.request.contextPath}/mgr/replenish/replenishList"><i class="fa fa-reply"></i> 取消</a>&nbsp;<span id="g_message" style="color:red;"></span>
                   <form action="add" method="post" id="ReplenishForm">
                         <div class="row" style="margin-top:15px;">
                         	<div class="col-sm-6">
@@ -36,6 +36,10 @@
                                 <table id="goodsTable" class="table table-bordered table-striped table-hover">
                                    <thead>
                                    <tr>
+                                   <th class="t_center" style="width:5%;">
+                                   		<div class="th-inner">序号</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
                                    	<th class="t_center" style="width:15%;">
                                    		<div class="th-inner">商品编号</div>
                                    		<div class="fht-cell"></div>
@@ -52,7 +56,7 @@
                                    		<div class="th-inner">供应商</div>
                                    		<div class="fht-cell"></div>
                                    	</th>
-                                   	<th class="t_center" style="width:10%;">
+                                   	<th class="t_center" style="width:5%;">
                                    		<div class="th-inner">单价</div>
                                    		<div class="fht-cell"></div>
                                    	</th>
@@ -60,8 +64,12 @@
                                    		<div class="th-inner">商品金额</div>
                                    		<div class="fht-cell"></div>
                                    	</th>
-                                   	<th class="t_center" style="width:10%;">
+                                   	<th class="t_center" style="width:15%;">
                                    		<div class="th-inner">采购数量</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:10%;">
+                                   		<div class="th-inner">生产日期</div>
                                    		<div class="fht-cell"></div>
                                    	</th>
                                    	<th class="t_center" style="width:5%;">
@@ -72,8 +80,12 @@
                                    </thead>
                                    <tbody>
                                    <tr>
+                                   <td class="t_center">1
+                                   	</td>
                                    	<td class="t_center">
                                    		<a class="btn btn-info btn-xs" onclick="chooseGoodsDialog();" ><i class="fa fa-plus"></i></a>
+                                   	</td>
+                                   	<td class="t_center">
                                    	</td>
                                    	<td class="t_center">
                                    	</td>
@@ -176,7 +188,8 @@
 
 <script>
 $(document).ready(function() {
-	bootbox.setDefaults({locale:"zh_CN"});	
+	bootbox.setDefaults({locale:"zh_CN"});
+	
 })
 
 function chooseGoodsDialog() {
@@ -193,11 +206,21 @@ function chooseGoodsDialog() {
  	          columns: [
  	                    {
  	                    	title: '<input type="checkbox" id="allCheckbox" />',
+ 	                    	width: '1%',
    	                      	align: 'center',
    	                      	valign: 'middle',
    	                     	formatter:function(value,row,index){
 	                    		 return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
 	                    	}
+ 	                    },
+ 	                    {
+ 	                    	title: '序号',
+ 	                    	width: '1%',
+   	                      	align: 'center',
+   	                      	valign: 'middle',
+   	                     	formatter:function(value,row,index){
+   	                    		 return index + 1;
+   	                    	}
  	                    },
  	                   {
  	 	                      title: '商品编号',
@@ -251,9 +274,13 @@ function chooseGoodsDialog() {
 
  	              ],
  	             onLoadSuccess:function() {
-  	            	$('input[type="checkbox"]').iCheck({
-  	       	         checkboxClass: 'icheckbox_minimal-blue',
-  	       	 		});
+ 	            	$('#allCheckbox').iCheck({
+ 	 	       	         checkboxClass: 'icheckbox_minimal-blue',
+ 	 	       	 		});
+ 	 	            	$('.selCheckbox').iCheck({
+ 	 	 	       	         checkboxClass: 'icheckbox_minimal-blue',
+ 	 	 	       	 });
+ 	 	            	
   	      			$("#allCheckbox").on('ifChecked', function(event){  
   	      				$(".selCheckbox").iCheck('check');
   	      			}).on('ifUnchecked', function(event){
@@ -292,11 +319,6 @@ function resetValue() {
 }
 
 
-function validateIsChooseGoods() {
-	
-	return true;
-}
-
 function chooseGoods() {	
 	var strIds = new Array();
 	$(".selCheckbox:checked").each(function() {
@@ -316,14 +338,27 @@ function chooseGoods() {
 			var num = parseInt($("#n" + row.id).val());
 			$("#n" + row.id).val(num + 1);
 		} else {
-			var nid = "\'"+ row.id + "\'";
-			var tr = "<tr id='"+ row.id +"'><input type='hidden' name='goodsId' value='"+ row.id +"' /><td class='t_center'>"+ row.sn +"</td><td class='t_center'>"+ row.name +"</td><td class='t_center'>"+ row.goodsTypeId +"</td><td class='t_center'>"+ row.supplier.name +"</td><td class='t_center'>"+ parseFloat(row.purchasePrice).toFixed(2) +"</td><td class='t_center'>"+ parseFloat(row.purchasePrice).toFixed(2) +"</td><td class='t_center'><a class='btn btn-default btn-xs' nid='"+ row.id +"' onclick='minus(this);'><i class='fa fa-minus'></i></a>  <input type='text'  id='n"+ row.id +"' onchange='changeGoodsMoney(this.parentNode.parentNode);' style='width:50px;text-align:center;' name='num' value='1'  />  <a class='btn btn-default btn-xs' nid='"+ row.id +"' onclick='plus(this);'><i class='fa fa-plus'></i></a></td><td  class='t_center'><a class='btn btn-danger btn-xs' onclick='removeTr(this)'><i class='fa fa-remove'></i></a></td></tr>";
+			var tr = "<tr id='"+ row.id +"'><input type='hidden' name='goodsId' value='"+ row.id +"' /><td class='t_center'></td><td class='t_center'>"+ row.sn +"</td><td class='t_center'>"+ row.name +"</td><td class='t_center'>"+ row.goodsTypeId +"</td><td class='t_center'>"+ row.supplier.name +"</td><td class='t_center'>"+ parseFloat(row.purchasePrice).toFixed(2) +"</td><td class='t_center'>"+ parseFloat(row.purchasePrice).toFixed(2) +"</td><td class='t_center'><a class='btn btn-default btn-xs' nid='"+ row.id +"' onclick='minus(this);'><i class='fa fa-minus'></i></a>  <input type='text'  id='n"+ row.id +"' onchange='changeGoodsMoney(this.parentNode.parentNode);' style='width:50px;text-align:center;' name='num' value='1'  />  <a class='btn btn-default btn-xs' nid='"+ row.id +"' onclick='plus(this);'><i class='fa fa-plus'></i></a></td><td class='t_center'><input type='text' id='pd"+ row.id +"'  style='text-align:center;' name='productionDate' readonly='readonly'  /></td><td  class='t_center'><a class='btn btn-danger btn-xs' onclick='removeTr(this)'><i class='fa fa-remove'></i></a></td></tr>";
 			$("#goodsTable").prepend(tr);
+			setGoodsTableNo();
+			$('#pd' + row.id).datepicker({		// datepicker 日期插件
+				 language: 'zh-CN',
+				autoclose:true,
+			    format: 'yyyy-mm-dd',
+			});
 		}
 	}
 
 	changeTotalMoney();
 	cancel();
+}
+
+function setGoodsTableNo() {
+	var tr_index = 1;
+	$("#goodsTable").find("tbody").find("tr").each(function() {
+		$(this).find("td:eq(0)").text(tr_index);
+		tr_index = tr_index + 1;
+	})
 }
 
 function minus(obj) {
@@ -349,7 +384,7 @@ function plus(obj) {
 
 function changeGoodsMoney(obj) {
 	var isPoInt =  /^[0-9]*[1-9][0-9]*$/;	// 正整数 
-	var num = $(obj).find("td:eq(6)").find("input[type=text]").val();
+	var num = $(obj).find("td:eq(7)").find("input[type=text]").val();
 	if (!isPoInt.test(num)) {
 		bootbox.alert({
 			size: "small",
@@ -358,8 +393,8 @@ function changeGoodsMoney(obj) {
 		return;
 	}
 	
-	var goodsmoney = parseFloat(num) * parseFloat($(obj).find("td:eq(4)").text());
-	$(obj).find("td:eq(5)").text(parseFloat(goodsmoney).toFixed(2));
+	var goodsmoney = parseFloat(num) * parseFloat($(obj).find("td:eq(5)").text());
+	$(obj).find("td:eq(6)").text(parseFloat(goodsmoney).toFixed(2));
 	
 	changeTotalMoney($(obj).parent());
 }
@@ -368,8 +403,8 @@ function changeTotalMoney() {
 
 	var totalmoney = parseFloat("0");
 	$("#goodsTable").find("tbody").find("tr").each(function() {
-		if ($.trim($(this).find("td:eq(5)").text()) != '') {
-		var goodsmoney = $(this).find("td:eq(5)").text();
+		if ($.trim($(this).find("td:eq(6)").text()) != '') {
+		var goodsmoney = $(this).find("td:eq(6)").text();
 		totalmoney = parseFloat(totalmoney) + parseFloat(goodsmoney);
 		}
 	})
@@ -405,6 +440,14 @@ function validateRelenish() {
 	$("input[name=num]").each(function() {
 		if (!isPoInt.test($(this).val())) {
 			$("#g_message").html("请输入正确的数量");
+			$(this).focus();
+			flag = false;
+			return false;
+		}
+	})
+	$("input[name=productionDate]").each(function() {
+		if ($(this).val() == '') {
+			$("#g_message").html("请选择该批次商品生产日期");
 			$(this).focus();
 			flag = false;
 			return false;

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.SaleBDao">
+	<resultMap type="SaleB" id="SaleBResult">
+		<result property="id" column="ID" />
+		<result property="num" column="NUM" />
+		<result property="returnNum" column="RETURN_NUM" />
+		<result property="goodsMoney" column="GOODS_MONEY" />
+
+		<association property="sale" column="SALE_ID" select="com.psi.dao.SaleDao.getById"></association>
+		<association property="goodsStock" column="GOODS_STOCK_ID" select="com.psi.dao.GoodsStockDao.getById"></association>
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, SALE_ID, NUM, RETURN_NUM, GOODS_MONEY,  GOODS_STOCK_ID 
+	</sql>
+	
+	<select id="getById" resultMap="SaleBResult">
+		select <include refid="Base_Column_List" /> from sale_b where ID = #{id}
+	</select>
+	
+	<insert id="insert">
+		insert into sale_b(<include refid="Base_Column_List" />)
+		 values(#{id}, #{sale.id}, #{num}, #{returnNum}, #{goodsMoney},  #{goodsStock.id})
+	</insert>
+	
+	<delete id="delete">
+		delete from sale_b where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="SaleB">
+		update sale_b
+		<set>
+			<if test="returnNum != null and returnNum != ''">
+				RETURN_NUM = #{returnNum},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>
+	
+	  
+	<select id="queryList" resultMap="SaleBResult">
+		select <include refid="Base_Column_List" />
+		from sale_b r
+		<where>
+			<if test="saleId != null and saleId != ''">
+				and SALE_ID = #{saleId}
+			</if>
+			<if test="flag != null and flag != ''">
+				and RETURN_NUM <![CDATA[<]]> NUM
+			</if>
+		</where>
+		order by GOODS_MONEY
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from sale_b
+		<where>
+			<if test="saleId != null and saleId != ''">
+				SALE_ID = #{saleId}
+			</if>
+		</where>
+	</select>
+		
+</mapper> 

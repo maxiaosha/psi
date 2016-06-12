@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <div class="content-wrapper">
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title }</div>
+                      <div class="panel">
+			<div class="panel-heading">${requestScope.title }</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                         	<a class="btn btn-success" onclick="addMenuDialog()"><i class="fa fa-plus"></i> 新增</a>
@@ -14,8 +15,147 @@
                             <a class="btn btn-danger" onclick="_deleteMenu()"><i class="fa fa-remove"></i> 删除</a>
                             <div class="dataTable_wrapper" style="margin-top:10px;">
                             	
-                                <table id="menuTable" class="table table-bordered table-striped table-hover">
+                                <table id="menuTable1" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                   <tr>
+                                   <th class="t_center" style="width:1%;">
+                                   		<div class="th-inner"><input type="checkbox" id="allCheckbox" /></div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                    <th class="t_center" style="width:3%;">
+                                   		<div class="th-inner">序号</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:5%;">
+                                   		<div class="th-inner">等级</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:10%;">
+                                   		<div class="th-inner">名称</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                               
+                                   	<th class="t_center" style="width:6%;">
+                                   		<div class="th-inner">URL</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:10%;">
+                                   		<div class="th-inner">父级菜单</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	
+                                   	<th class="t_center" style="width:6%;">
+                                   		<div class="th-inner">权限</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:3%;">
+                                   		<div class="th-inner">排序</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:10%;">
+                                   		<div class="th-inner">图标</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	<th class="t_center" style="width:5%;">
+                                   		<div class="th-inner">操作</div>
+                                   		<div class="fht-cell"></div>
+                                   	</th>
+                                   	</tr>
+                                   </thead>
+                                   <tbody>
+                                   <c:forEach var="menu1" items="${requestScope.list }" varStatus="status1">
+                                   <c:set var="size1" value="${fn:length(menu1.childList) }" />                                 
+                                   	<tr id="${menu1.id }">
+                                   		<td class="t_center">
+                                   			<input type="checkbox" class="selCheckbox" value="${menu1.id }" />
+                                   		</td>
+                                   		<td class="t_center">
+                                   			
+                                   			<c:if test="${size1 > 0 }">
+                                   				<a class="btn btn-default btn-xs" onclick="menuToggle('${menu1.id}')"><i id="i${menu1.id}" class="fa fa-minus"></i></a>
+                                   			</c:if>
+                                   		</td>
+                                   		<td class="t_center">一级菜单</td>
+                                   		<td class="t_center">${menu1.name }</td>
+                                   		<td class="t_center">${menu1.url }</td>
+                                   		<td class="t_center"></td>
+                                   		
+                                   		<td class="t_center">
+                                   			<c:if test="${menu1.role.permission == '1' }">超级管理员</c:if>
+                                   			<c:if test="${menu1.role.permission == '2' }">普通管理员</c:if>
+                                   			<c:if test="${menu1.role.permission == '3' }">普通员工</c:if>
+                                   		</td>
+                                   		<td class="t_center">${menu1.orderFlag }</td>
+                                   		<td class="t_center">${menu1.icon }</td>
+                                   		<td class="t_center">
+                                   			<a class="btn btn-info btn-xs" onclick="editMenuDialog('${menu1.id}')"><i class="fa fa-edit"></i></a>
+                                   			<a class="btn btn-danger btn-xs" onclick="deleteMenu('${menu1.id}')"><i class="fa fa-remove"></i></a>
+                                   		</td>
+                                   	</tr>
+                                   	
+                                   	<c:if test="${size1 > 0 }">
+                                   		<c:forEach var="menu2" items="${menu1.childList }" varStatus="status2">
+                                   			<c:set var="size2" value="${fn:length(menu2.childList) }" />
+                                   		
+                                   			<tr id="${menu2.id }" class="${menu1.id }">
+                                   				<td class="t_center">
+                                   					<input type="checkbox" class="selCheckbox ${menu1.id }" value="${menu2.id }" />
+                                   				</td>
+                                   				<td class="t_center">
+                                   					${status2.count}
+                                   					<c:if test="${size2 > 0 }">
+                                   						<a class="btn btn-default btn-xs" onclick="menuToggle('${menu2.id}')"><i id="i${menu2.id}" class="fa fa-minus"></i></a>
+                                   					</c:if>
+                                   				</td>
+                                   				<td class="t_center">二级菜单</td>
+                                   				<td class="t_center">${menu2.name }</td>
+                                   				<td class="t_center">${menu2.url }</td>
+                                   				<td class="t_center">${menu2.parentMenu.name }</td>
+                                   				<td class="t_center">
+                                   					<c:if test="${menu2.role.permission == '1' }">超级管理员</c:if>
+                                   					<c:if test="${menu2.role.permission == '2' }">普通管理员</c:if>
+                                   					<c:if test="${menu2.role.permission == '3' }">普通员工</c:if>
+                                   				</td>
+                                   				<td class="t_center">${menu2.orderFlag }</td>
+                                   				<td class="t_center">${menu2.icon }</td>
+                                   				<td class="t_center">
+                                   					<a class="btn btn-info btn-xs" onclick="editMenuDialog('${menu2.id}')"><i class="fa fa-edit"></i></a>
+                                   					<a class="btn btn-danger btn-xs" onclick="deleteMenu('${menu2.id}')"><i class="fa fa-remove"></i></a>
+                                   				</td>
+                                   			</tr>
+                                   		
+                                   			<c:if test="${size2 >0 }">
+                                   				<c:forEach var="menu3" items="${menu2.childList }" varStatus="status3">
+                                   					<tr id="${menu3.id }" class="${menu2.id }">
+                                   						<td class="t_center">
+                                   							<input type="checkbox" class="selCheckbox ${menu2.id }" value="${menu3.id }" />
+                                   						</td>
+                                   						<td class="t_center">${status3.count}</td>
+                                   						<td class="t_center">三级菜单</td>
+                                   						<td class="t_center">${menu3.name }</td>
+                                   						<td class="t_center">${menu3.url }</td>
+                                   						<td class="t_center">${menu3.parentMenu.name }</td>
+                                   						<td class="t_center">
+                                   							<c:if test="${menu3.role.permission == '1' }">超级管理员</c:if>
+                                   							<c:if test="${menu3.role.permission == '2' }">普通管理员</c:if>
+                                   							<c:if test="${menu3.role.permission == '3' }">普通员工</c:if>
+                                   						</td>
+                                   						<td class="t_center">${menu3.orderFlag }</td>
+                                   						<td class="t_center">${menu3.icon }</td>
+                                   						<td class="t_center">
+                                   							<a class="btn btn-info btn-xs" onclick="editMenuDialog('${menu3.id}')"><i class="fa fa-edit"></i></a>
+                                   							<a class="btn btn-danger btn-xs" onclick="deleteMenu('${menu3.id}')"><i class="fa fa-remove"></i></a>
+                                   						</td>
+                                   					</tr>
+                                   				</c:forEach>
+                                   			</c:if>
+                                   		</c:forEach>
+                                   	</c:if>
+                                   </c:forEach>
                                    
+                                   
+                                   </tbody>
+                                </table>
                                 </table>
                             </div>
                             <!-- /.table-responsive -->
@@ -54,23 +194,27 @@
       				<input type="text" class="form-control" id="url" name="url" placeholder="URL">
     			</div>
   			</div>
+  	
   			<div class="form-group">
     			<label for="parentId" class="col-sm-3 control-label">父级菜单</label>
     			<div class="col-sm-6">
-    				<select class="form-control" id="parentId" name="parentId">
+    				<select class="form-control" id="parentId" name="parentMenu.id">
 						<option value="">无</option>
-							<c:forEach var="menu" items="${requestScope.menuList }">
-						<option value="${menu.id }">${menu.name }</option>
-							</c:forEach>
+						<c:forEach var="menu" items="${requestScope.menuList }">
+							<option value="${menu.id }">${menu.name }</option>
+						</c:forEach>
 					</select>   				
-    			</div>
+    			</div>    			
   			</div>
+  			
+  			 			
   			<div class="form-group">
-    			<label for="authorization" class="col-sm-3 control-label">权限</label>
+    			<label for="role" class="col-sm-3 control-label">权限</label>
     			<div class="col-sm-6">
-    				<select class="form-control" id="authorization" name="authorization">
-    					<option value="1">管理员</option>
-    					<option value="2">普通员工</option>
+    				<select class="form-control" id="role" name="role.id">
+    				<c:forEach var="role" items="${requestScope.roleList }">
+    					<option value="${role.id }">${role.name }</option>
+    				</c:forEach>
     				</select>				
     			</div>
   			</div>
@@ -100,137 +244,45 @@
   </div>
 </div>
 <script>
-function UrlSearch() {
-	   var name, value; 
-	   var str = location.href; //取得整个地址栏
-	   var num = str.indexOf("?") 
-	   str = str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
-
-	   var arr = str.split("&"); //各个参数放到数组里
-	   for(var i=0; i<arr.length; i++){ 
-		   num = arr[i].indexOf("="); 
-		   if(num > 0) { 
-			   name = arr[i].substring(0,num);
-			   value = arr[i].substr(num+1);
-			   this[name] = value;
-		} 
-	} 
-} 
+function menuToggle(menuId) {
+	$("." + menuId).toggle();
+	if ($("#i" + menuId).hasClass("fa-plus")) {
+		$("#i" + menuId).removeClass("fa-plus");
+		$("#i" + menuId).addClass("fa-minus");
+	} else {
+		$("#i" + menuId).removeClass("fa-minus");
+		$("#i" + menuId).addClass("fa-plus");
+	}	
+}
 
 $(document).ready(function() {
+	$('#allCheckbox').iCheck({
+	    checkboxClass: 'icheckbox_minimal-blue',
+	});
+    $('.selCheckbox').iCheck({
+    	checkboxClass: 'icheckbox_minimal-blue',
+    });
+    
 	bootbox.setDefaults({locale:"zh_CN"});
-	 
-	var request = new UrlSearch(); //实例化
-	var page = 1;
-	var pageSize = 10;
-	if (request.page != null) {
-		page = parseInt(request.page);
-	}
-	if (request.pageSize != null) {
-		pageSize = parseInt(request.pageSize);
-	}
-	$('#menuTable').bootstrapTable({
- 	 	url: "list", 
- 	    dataType: "json",
- 	    pagination: true, //分页
- 	    singleSelect: false,
- 	    uniqueId: "id",
- 	    pageSize: pageSize,
- 	    pageNumber: page,
- 	    sidePagination: "server", //服务端处理分页
- 	          columns: [
- 	                    {
- 	                    	title: '<input type="checkbox" id="allCheckbox" />',
-   	                      	align: 'center',
-   	                     	width: '3%',
-   	                      	valign: 'middle',
-   	                     	formatter:function(value,row,index){
-	                    		 return "<input type='checkbox' class='selCheckbox' value='"+ row.id +"' />";
-	                    	}
- 	                    }, 
- 	                  {
- 	                    title: '名称',
- 	                      field: 'name',
- 	                      width: '10%',
- 	                      align: 'center',
- 	                      valign: 'middle'	                     
- 	                  }, 
- 	                  {
- 	                      title: 'URL',
- 	                      field: 'url',
- 	                      width: '20%',
- 	                      align: 'center',
- 	                      valign: 'middle',
- 	                     
- 	                  }, 
- 	                  {
- 	                      title: '父级菜单',
- 	                      field: 'parentName',
- 	                      width: '10%',
- 	                      align: 'center',
- 	                      valign: 'middle'
- 	                  },
- 	                  {
- 	                      title: '层数',
- 	                      field: 'level',
- 	                      width: '5%',
- 	                      align: 'center',
- 	                      valign: 'middle'
- 	                  },
- 	                  {
- 	                      title: '权限',
- 	                      field: 'authorization',
- 	                      width: '10%',
- 	                      align: 'center',
- 	                      valign: 'middle'
- 	                  },
- 	                  {
- 	                      title: '排序优先级',
- 	                      field: 'orderFlag',
- 	                      width: '5%',
- 	                      align: 'center',
- 	                      valign: 'middle'
- 	                  },
- 	                  {
- 	                      title: '图标',
- 	                      field: 'icon',
- 	                      width: '20%',
- 	                      align: 'center',
- 	                      valign: 'middle'
- 	                  },
- 	                  {
- 	                	  title: '操作',
- 	                	  field: '',
- 	                	  width: '10%',
- 	                	  align: 'center',
-	                      valign: 'middle',
-	                      formatter:function(value,row,index){  
-	                          var e = '<a class="btn btn-info btn-xs" onclick="editMenuDialog(\''+ row.id + '\')"><i class="fa fa-edit"></i></a> ';  
-	                          var d = '<a class="btn btn-danger btn-xs" onclick="deleteMenu(\''+ row.id +'\')"><i class="fa fa-remove"></i></a> ';  
-	                          return e+d;  
-	                      } 
- 	                  }
- 	              ],
- 	             onPageChange:function(number, size) {
- 	            	window.history.pushState(null, null, "manageMenu?page=" + number + "&pageSize=" + size); 	
- 	             },
- 	             onLoadSuccess:function() {
- 	            	$('input[type="checkbox"]').iCheck({
- 	       	         checkboxClass: 'icheckbox_minimal-blue',
- 	       	 		});
- 	      			$("#allCheckbox").on('ifChecked', function(event){  
- 	      				$(".selCheckbox").iCheck('check');
- 	      			}).on('ifUnchecked', function(event){
- 	      				$(".selCheckbox").iCheck('uncheck');
- 	      			});
- 	             }
- 	             
- 	                   
- 	   });
 	
+	
+    
+    $("#allCheckbox").on('ifChecked', function(event){  
+		$(".selCheckbox").iCheck('check');
+	}).on('ifUnchecked', function(event){
+		$(".selCheckbox").iCheck('uncheck');
+	});
+    
+    $(".selCheckbox").on('ifChecked', function(event){
+		if (!$("." + $(this).val()).parent().parent().is(":hidden")){
+			$("." + $(this).val()).iCheck('check');
+		}   		
+	}).on('ifUnchecked', function(event){
+		$("." + $(this).val()).iCheck('uncheck');
+	});
 
-	
-	
+
+
 	$("#submit").click(function() {
 		if (!validate($("#id").val())) {
 			return false;
@@ -308,7 +360,7 @@ function resetValue() {
 	$("#url").val("");
 	$("#parentId").prop('selectedIndex', 0);
 	$("#id").val("");
-	$("#authorization").prop('selectedIndex', 0);
+	$("#role").prop('selectedIndex', 0);
 	$("#orderFlag").val("");
 	$("#icon").val("");
 	$("#message").html("");
@@ -317,13 +369,23 @@ function resetValue() {
 function addMenuDialog() {
 	$("#myModalLabel").html("新增菜单");
 	$('#MenuDialog').modal("show");
-	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/system/menu/add"});
+	$("#submit").attr({"action":"add"});
 }
 
 function cancel() {
 	$('#MenuDialog').modal("hide");
 	resetValue();
 }
+
+function getRow(id) {
+	this["id"] = id;
+	this["name"] = $("#" + id).find("td:eq(3)").text().trim();
+	this["url"] = $("#" + id).find("td:eq(4)").text().trim();
+	this["parentName"] = $("#" + id).find("td:eq(5)").text().trim();
+	this["role"] = $("#" + id).find("td:eq(6)").text().trim();
+	this["orderFlag"] = $("#" + id).find("td:eq(7)").text().trim();
+	this["icon"] = $("#" + id).find("td:eq(8)").text().trim();
+} 
 
 function _editMenuDialog() {
 	var i = 0;
@@ -342,24 +404,27 @@ function _editMenuDialog() {
     }
 	
     $("#myModalLabel").html("修改菜单信息");
-    
-	var row =  $('#menuTable').bootstrapTable("getRowByUniqueId",id);
+        
+	var row = new getRow(id);
     $("#name").val(row.name);
 	$("#url").val(row.url);
-	$("#authorization option").map(function () {
-		if ($(this).val() == row.authorization) {
+	
+	$("#parentId option").map(function () {
+		
+		if ($(this).text() == row.parentName) {
+			$(this).attr({"selected" : "selected"});
+		}
+	})
+	
+	$("#role option").map(function () {
+		if ($(this).text() == row.role) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
 	$("#orderFlag").val(row.orderFlag);
-	$("#parentId option").map(function () {
-		if ($(this).val() == row.parentId) {
-			$(this).attr({"selected" : "selected"});
-		}
-	})
 	$("#icon").val(row.icon);
-	$("#id").val(row.id);
-	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/system/menu/modify"});
+	$("#id").val(row.id); 
+	$("#submit").attr({"action":"modify"});
 	$('#MenuDialog').modal("show");
 }
     
@@ -383,7 +448,7 @@ function _deleteMenu() {
 		 message: "确认要删除这<font color=red>" + strIds.length + "</font>条菜单记录吗？",
 		 callback: function(result) {
 			 if (result) {
-				 $.post("${pageContext.request.contextPath}/mgr/system/menu/delete",{ids:ids},function(data){
+				 $.post("delete",{ids:ids},function(data){
 						if(data.status == 1){
 							bootbox.alert({
 					    		size:"small",
@@ -406,24 +471,26 @@ function _deleteMenu() {
 }
     
 function editMenuDialog(id) {
-    var row =  $('#menuTable').bootstrapTable("getRowByUniqueId",id);
+    var row =  new getRow(id);
     $("#myModalLabel").html("修改菜单信息");
     $("#name").val(row.name);
+   
 	$("#url").val(row.url);
-	$("#authorization option").map(function () {
-		if ($(this).val() == row.authorization) {
+	$("#role option").map(function () {
+		if ($(this).text() == row.role) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
 	$("#orderFlag").val(row.orderFlag);
 	$("#parentId option").map(function () {
-		if ($(this).val() == row.parentId) {
+		
+		if ($(this).text() == row.parentName) {
 			$(this).attr({"selected" : "selected"});
 		}
 	})
 	$("#icon").val(row.icon);
 	$("#id").val(row.id);
-	$("#submit").attr({"action":"${pageContext.request.contextPath}/mgr/system/menu/modify"});
+	$("#submit").attr({"action":"modify"});
 	$('#MenuDialog').modal("show");
 }
     
@@ -433,7 +500,7 @@ function deleteMenu(id) {
 		 message: "确认要删除这条菜单记录吗？",
 		 callback: function(result) {
 			 if (result) {
-				 $.post("${pageContext.request.contextPath}/mgr/system/menu/delete",{ids:id},function(data){
+				 $.post("delete",{ids:id},function(data){
 						if(data.status == 1){
 							bootbox.alert({
 					    		size:"small",

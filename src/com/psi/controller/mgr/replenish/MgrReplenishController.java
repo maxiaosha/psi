@@ -1,4 +1,4 @@
-package com.psi.controller.mgr.goods.replenish;
+package com.psi.controller.mgr.replenish;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +36,8 @@ import net.sf.json.JSONObject;
  *
  */
 @Controller
-@RequestMapping("/mgr/goods/replenish")
+@RequestMapping("/mgr/replenish")
 public class MgrReplenishController {
-	@Autowired
-	private GoodsService goodsService;
 	@Autowired
 	private SupplierService supplierService;
 	@Autowired
@@ -47,9 +45,23 @@ public class MgrReplenishController {
 	@Autowired
 	private ReplenishBService replenishBService;
 
-	
 	/**
 	 * 采购单列表页面
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/replenishList")
+	public ModelAndView replenishList() throws Exception {		
+		ModelAndView mav = new ModelAndView("main");
+		mav.addObject("title", "采购单列表");
+		mav.addObject("mainPage", "/WEB-INF/mgr/replenish/replenishList.jsp");
+		//mav.addObject("baseUrl", "/mgr/replenish/manageGoods");
+		
+		return mav;
+	}
+	
+	/**
+	 * 采购单列表数据
 	 * @param limit
 	 * @param offset
 	 * @param searchReplenishSn
@@ -95,6 +107,9 @@ public class MgrReplenishController {
 	public String replenishBList(String replenishId) throws Exception {
 		if (replenishId == null) {
 			return null;
+		}		
+		if (replenishId.trim().equals("")) {
+			return null;
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -116,25 +131,7 @@ public class MgrReplenishController {
 		
 	}
 	
-	/**
-	 * 采购单列表页面
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/replenishList")
-	public ModelAndView replenishList() throws Exception {
-
-		List<Supplier> supplierList = supplierService.queryList(null);
-		List<Goods> goodsList = goodsService.queryList(null);
-		
-		ModelAndView mav = new ModelAndView("main");
-		mav.addObject("title", "商品信息管理");
-		mav.addObject("mainPage", "/WEB-INF/mgr/goods/replenish/replenishList.jsp");
-		mav.addObject("supplierList", supplierList);
-		mav.addObject("goodsList", goodsList);
-		
-		return mav;
-	}
+	
 	
 	/**
 	 * 添加采购单页面
@@ -147,9 +144,11 @@ public class MgrReplenishController {
 		ModelAndView mav = new ModelAndView("main");
 		
 		mav.addObject("title", "添加采购单");
-		mav.addObject("mainPage", "/WEB-INF/mgr/goods/replenish/addReplenish.jsp");
-		mav.addObject("supplierList", supplierList);
+		mav.addObject("mainPage", "/WEB-INF/mgr/replenish/addReplenish.jsp");
+		mav.addObject("baseUrl", "/mgr/replenish/addReplenish");
 		
+		mav.addObject("supplierList", supplierList);
+	
 		return mav;
 	}
 	
@@ -164,50 +163,17 @@ public class MgrReplenishController {
     public String add(HttpServletRequest request) throws Exception {
 		String remark = request.getParameter("remark");
 		String goodsIds[] = request.getParameterValues("goodsId");
+		String productionDates[] = request.getParameterValues("productionDate");
 		String nums[] = request.getParameterValues("num");
 		
-		Replenish replenish = new Replenish();
-		replenish.setId(SerialNumberUtil.getSerialNumber());
-		replenish.setSn(SnUtil.createSn("RE"));
-		replenish.setCreateTime(DateTimeUtil.getCurrentTime());
-		replenish.setRemark(remark);
-		Double totalMoney = new Double(0);
-		
-		for (int i=0; i<goodsIds.length; i++) {
-			Goods goods = goodsService.getById(goodsIds[i]);
-			ReplenishB replenishB = new ReplenishB();
-			replenishB.setId(SerialNumberUtil.getSerialNumber());
-			replenishB.setReplenishId(replenish.getId());
-			replenishB.setGoods(goods);
-			replenishB.setSupplier(goods.getSupplier());
-			replenishB.setNum(nums[i]);
-			
-			Double numDou = Double.parseDouble(nums[i]);
-			replenishB.setGoodsMoney(numDou * goods.getPurchasePrice());
-			totalMoney += replenishB.getGoodsMoney();
-			try {
-				if (replenishBService.insert(replenishB) > 0) {
-					continue;
-				} else {
-					return AjaxUtil.getStringMessage(0, "添加至第"+ i +"条进货商品记录发生错误！请重新操作！", null);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return AjaxUtil.getStringMessage(0, "添加至第"+ i +"条进货商品记录发生错误！请重新操作！", null);
-			}
-		}
-		
-		replenish.setTotalMoney(totalMoney);
-		
 		try {
-			if (replenishService.insert(replenish) > 0) {
-				return AjaxUtil.getStringMessage(1, "添加采购单记录成功！", "replenishList");
-			} else {
-				return AjaxUtil.getStringMessage(0, "添加采购单记录失败！", null);
-			}
+			replenishService.insertReplenish(remark, goodsIds, productionDates, nums);
+			return AjaxUtil.getStringMessage(1, "添加采购单成功！", "replenishList");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return AjaxUtil.getStringMessage(1, "添加采购单记录失败！", null);
+			return AjaxUtil.getStringMessage(0, e.getMessage(), null);
 		}
+		
+		
 	}
 }

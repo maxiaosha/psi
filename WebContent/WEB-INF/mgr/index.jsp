@@ -5,8 +5,8 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title }</div>
+                      <div class="panel">
+			<div class="panel-heading">${requestScope.title }</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                         

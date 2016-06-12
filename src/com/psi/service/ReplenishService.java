@@ -9,4 +9,13 @@ import com.psi.entity.Replenish;
  */
 public interface ReplenishService extends BaseService<Replenish> {
 
+	/**
+	 * Ìí¼Ó²É¹ºµ¥
+	 * @param remark
+	 * @param goodsId
+	 * @param nums
+	 * @return
+	 * @throws Exception 
+	 */
+	void insertReplenish(String remark, String[] goodsIds,String[] productionDates, String[] nums) throws Exception;
 }

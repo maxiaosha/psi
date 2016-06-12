@@ -26,7 +26,7 @@ public class Goods implements Serializable {
 	private String spec;					// 规格
 	private String numberUnit;				// 数量单位
 	private String remark;					// 备注
-	private String stock;					// 库存
+	private String stock;					// 总库存
 	public String getId() {
 		return id;
 	}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.psi.dao.SaleDao">
+	<resultMap type="Sale" id="SaleResult">
+		<result property="id" column="ID" />
+		<result property="sn" column="SN" />
+		<result property="userId" column="USER_ID" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="totalMoney" column="TOTAL_MONEY" />
+		<result property="remark" column="REMARK" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+		ID, SN, USER_ID, CREATE_TIME, TOTAL_MONEY, REMARK
+	</sql>
+	
+	<select id="getById" resultMap="SaleResult">
+		select <include refid="Base_Column_List" /> from sale where ID = #{id}
+	</select>
+	
+	<select id="getBySn" resultMap="SaleResult">
+		select <include refid="Base_Column_List" /> from sale where SN = #{sn}
+	</select>
+	
+	<insert id="insert">
+		insert into sale(<include refid="Base_Column_List" />)
+		 values(#{id}, #{sn}, #{userId}, #{createTime}, #{totalMoney},#{remark})
+	</insert>
+	
+	<delete id="delete">
+		delete from sale where ID = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="Sale">
+		update sale
+		<set>
+
+		</set>
+		where ID = #{id}
+	</update>
+	  
+	<select id="queryList" resultMap="SaleResult">
+		select <include refid="Base_Column_List" />
+		from sale r
+		<where>
+			<if test="sn != null and sn != ''">
+				and SN like CONCAT('%',#{sn},'%') 
+			</if>
+			<if test="startTime != null and startTime != ''">
+				and CREATE_TIME <![CDATA[>=]]> #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				and CREATE_TIME <![CDATA[<=]]> #{endTime}
+			</if>
+		</where>
+		order by CREATE_TIME desc
+		<if test="start!=null and size!=null">
+			limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" resultType="Long">
+		select count(*) from sale
+		<where>
+			<if test="sn != null and sn != ''">
+				and SN like CONCAT('%',#{sn},'%') 
+			</if>
+			<if test="startTime != null and startTime != ''">
+				and CREATE_TIME <![CDATA[>=]]> #{startTime}
+			</if>
+			<if test="endTime != null and endTime != ''">
+				and CREATE_TIME <![CDATA[<=]]> #{endTime}
+			</if>
+		</where>
+	</select>
+		
+</mapper> 

@@ -31,7 +31,7 @@ import net.sf.json.JSONObject;
  *
  */
 @Controller
-@RequestMapping("/mgr/goods")
+@RequestMapping("/mgr/goods/goods")
 public class MgrGoodsController {
 	@Autowired
 	private GoodsService goodsService;
@@ -46,13 +46,14 @@ public class MgrGoodsController {
 	@RequestMapping("/manageGoods")
 	public ModelAndView manageGoods() throws Exception {
 		List<Supplier> supplierList = supplierService.queryList(null);
-		List<Goods> goodsList = goodsService.queryList(null);
+		//List<Goods> goodsList = goodsService.queryList(null);
 		
 		ModelAndView mav = new ModelAndView("main");
 		mav.addObject("title", "商品信息管理");
-		mav.addObject("mainPage", "/WEB-INF/mgr/goods/manageGoods.jsp");
+		mav.addObject("mainPage", "/WEB-INF/mgr/goods/goods/manageGoods.jsp");
+		//mav.addObject("baseUrl", "/mgr/goods/manageGoods");
 		mav.addObject("supplierList", supplierList);
-		mav.addObject("goodsList", goodsList);
+		//mav.addObject("goodsList", goodsList);
 		
 		return mav;
 	}
@@ -109,6 +110,7 @@ public class MgrGoodsController {
 			try {
 				goods.setId(SerialNumberUtil.getSerialNumber());
 				goods.setSn(SnUtil.createSn("GD"));
+				goods.setStock("0");
 				if (goodsService.insert(goods) > 0) {
 					return AjaxUtil.getStringMessage(1, "添加商品记录成功！", null);
 				} else {

@@ -6,8 +6,8 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">${requestScope.title }</div>
+                      <div class="panel">
+			<div class="panel-heading">${requestScope.title }</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                         	<a class="btn btn-success" href="${pageContext.request.contextPath}/mgr/goods/replenish/addReplenish"><i class="fa fa-plus"></i> 新增</a>
@@ -132,6 +132,8 @@
     </div>
   </div>
 </div>
+</div>
+
 <script>
 function UrlSearch() {
    var name, value; 
@@ -188,7 +190,15 @@ $(document).ready(function() {
  	    pageNumber: page,
  	    sidePagination: "server", //服务端处理分页
  	          columns: [
-
+ 	                    {
+ 	                    	title: '序号',
+ 	                    	width: '1%',
+   	                      	align: 'center',
+   	                      	valign: 'middle',
+   	                     	formatter:function(value,row,index){
+   	                    		 return index + 1;
+   	                    	}
+ 	                    },
  	                   {
  	 	                      title: '采购单编号',
  	 	                      field: 'sn',
@@ -251,7 +261,15 @@ $(document).ready(function() {
 	 	    queryParams: queryParamsB,
 	 	    sidePagination: "server", //服务端处理分页
 		          columns: [
-
+	 	                    {
+	 	                    	title: '序号',
+	 	                    	width: '1%',
+	   	                      	align: 'center',
+	   	                      	valign: 'middle',
+	   	                     	formatter:function(value,row,index){
+	   	                    		 return index + 1;
+	   	                    	}
+	 	                    },
 		                   {
 		 	                      title: '商品',
 		 	                      field: 'goods.name',
@@ -331,8 +349,8 @@ function viewReplenishDialog(id) {
 	$("#myModalLabel").html("采购单详细信息");
 	$("#sn").val(row.sn);
     $("#remark").val(row.remark);
-    $("#createTime").val(row.createTime);
-    $("#totalMoney").val(row.totalMoney);
+    $("#createTime").val(row.createTime.substring(0,11));
+    $("#totalMoney").val(parseFloat(row.totalMoney).toFixed(2));
     $('#replenishBTable').bootstrapTable('refresh');
 
 	$('#ReplenishDialog').modal("show");

@@ -5,8 +5,8 @@
 	<section class="content">
 	<div class="row">
                 <div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">All available icons (font-awesome)</div>
+                      <div class="panel">
+			<div class="panel-heading">All available icons (font-awesome)</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                     <div class="row">
@@ -535,8 +535,8 @@
             <!-- /.row -->
             <div class="row">
             	<div class="col-lg-12">
-                      <div class="panel panel-primary" style="border-color:#3c8dbc;">
-			<div class="panel-heading" style="background-color: #3c8dbc;border-color:#3c8dbc;">All available icons (bootstrap)</div>
+                      <div class="panel">
+			<div class="panel-heading">All available icons (bootstrap)</div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                     <div class="row">
